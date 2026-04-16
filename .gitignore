@@ -1,0 +1,27 @@
+# --- Python ---
+# Ignora ficheiros compilados que o Python cria automaticamente
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Ambientes Virtuais ---
+# Essencial para não enviar as bibliotecas instaladas para o GitHub
+venv/
+.venv/
+env/
+# Se usarem bibliotecas para o TP3 (Docusaurus), ignorar os módulos node
+node_modules/
+
+# --- IDEs (Ambientes de Desenvolvimento) ---
+# Ignora configurações pessoais do VS Code ou PyCharm
+.vscode/
+.idea/
+
+# --- Sistema Operativo ---
+.DS_Store
+Thumbs.db
+
+# --- Documentação Temporária ---
+# Se gerarem documentação automática que não seja para o repositório
+site/
+build/

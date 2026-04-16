@@ -1,0 +1,1 @@
+# Funções para ler/escrever em ficheiro (JSON ou CSV)

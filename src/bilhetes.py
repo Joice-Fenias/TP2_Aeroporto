@@ -1,0 +1,1 @@
+# Lógica de operações CRUD (venda, cancelamento)
