@@ -16,3 +16,9 @@ def load_data():
             json.dump(data, f, indent=2)
         print("Database created")
         return data.copy()
+
+#Function to save json 
+def save_data(data):
+    #Save data to JSON file
+    with open ("database.json","w") as f:
+        json.dump(data,f, indent=2)
