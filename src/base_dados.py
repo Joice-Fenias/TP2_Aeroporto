@@ -1,6 +1,8 @@
 # Funções para ler/escrever em ficheiro (JSON ou CSV)
 import json
 
+arquivo_db="database.json"
+
 # Estrutura base para armazenar os dados
 dados = {"passageiros": [], "voos": [], "bilhetes": []}
 
@@ -13,10 +15,10 @@ def carregar_dados():
     """
 
     try:
-        with open("database.json", "r") as ficheiro:
+        with open(arquivo_db, "r") as ficheiro:
             return json.load(ficheiro)
     except FileNotFoundError:
-        with open("database.json", "w") as ficheiro:
+        with open(arquivo_db, "w") as ficheiro:
             json.dump(dados, ficheiro, indent=2)
         print("Base de dados criada")
         return dados.copy()
