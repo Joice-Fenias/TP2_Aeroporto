@@ -6,7 +6,11 @@ dados = {"passageiros": [], "voos": [], "bilhetes": []}
 
 
 def carregar_dados():
-    """Tenta abrir o ficheiro; se não existir, cria um novo"""
+    """Carrega os dados do ficheiro JSON.
+    
+    Se o ficheiro não existir, cria uma estrutura inicial
+    e devolve uma cópia dos dados base.
+    """
 
     try:
         with open("database.json", "r") as ficheiro:
@@ -20,7 +24,7 @@ def carregar_dados():
 
 # Função para guardar dados no ficheiro JSON
 def guardar_dados(dados):
-    """Guarda os dados no ficheiro JSON"""
+    """Guarda os dados atualizados no ficheiro JSON."""
 
     with open("database.json", "w") as ficheiro:
         json.dump(dados, ficheiro, indent=2)
