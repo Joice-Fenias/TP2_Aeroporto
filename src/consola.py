@@ -56,7 +56,7 @@ def adicionar_voo():
     except Exception as e:
         print(f"\n{Fore.RED}❌ Erro inesperado: {e}")
     aguardar_enter()
-    pass
+
 
 def registar_passageiro():
     """Interface para criar um novo passageiro."""
@@ -70,7 +70,6 @@ def registar_passageiro():
     except Exception as e:
         print(f"\n{Fore.RED}❌ Erro: {e}")
     aguardar_enter()
-    pass
 
 def vender_bilhete():
     """Realiza a venda integrando voo e passageiro."""
@@ -90,7 +89,21 @@ def cancelar_bilhete():
     pass
 
 def listar_voos():
-    pass
+    """Mostra o estado atual de todos os voos."""
+    print(f"\n{Fore.WHITE}{'='*50}")
+    print(f"{Fore.CYAN}{'VOO':<10} | {'ROTA':<20} | {'VAGAS':<10}")
+    print(f"{Fore.WHITE}{'-'*50}")
+    
+    if not sistema.voos:
+        print(f"{Fore.YELLOW}Nenhum voo registado.")
+    else:
+        for v in sistema.voos.values():
+            cor_vaga = Fore.GREEN if v.tem_vaga() else Fore.RED
+            status = f"{v.lugares_ocupados}/{v.capacidade}"
+            print(f"{v.numero_voo:<10} | {v.origem[:8]+'-'+v.destino[:8]:<20} | {cor_vaga}{status}")
+    
+    print(f"{Fore.WHITE}{'='*50}")
+    aguardar_enter()
 
 def mostrar_historico():
     pass
