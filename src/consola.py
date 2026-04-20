@@ -59,6 +59,17 @@ def adicionar_voo():
     pass
 
 def registar_passageiro():
+    """Interface para criar um novo passageiro."""
+    print(f"\n{Fore.WHITE}--- Registar Passageiro ---")
+    nome = input(f"{Fore.YELLOW}Nome Completo: {Fore.WHITE}")
+    passaporte = input(f"{Fore.YELLOW}Nº Passaporte: {Fore.WHITE}")
+    
+    try:
+        sistema.criar_passageiro(nome, passaporte)
+        print(f"\n{Fore.GREEN}✅ Passageiro {nome} guardado.")
+    except Exception as e:
+        print(f"\n{Fore.RED}❌ Erro: {e}")
+    aguardar_enter()
     pass
 
 def comprar_bilhete():
