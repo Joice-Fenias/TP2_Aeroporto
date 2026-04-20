@@ -179,7 +179,58 @@ class Sistema:
             "voos": [v.to_dict() for v in self.voos.values()],
             "bilhetes": [b.to_dict() for b in self.bilhetes]
         }
-    
+    def carregar_de_dados(self, dados_brutos):
+        """
+        Reconstrói o estado completo do sistema a partir de um dicionário (JSON).
+        Este método recria os objetos reais (Passageiro, Voo, Bilhete) para que 
+        a lógica de negócio continue a funcionar.
+        """
+        # 1. Recriar Passageiros
+        for p in dados_brutos.get("passageiros", []):
+            self.criar_passageiro(p["nome"], p["passaporte"])
+
+        # 2. Recriar Voos (Diferenciando Nacional de Internacional)
+        for v in dados_brutos.get("voos", []):
+            # Verifica se é um voo internacional pela presença da taxa
+            if "taxa_internacional" in v:
+                novo_voo = VooInternacional(
+                    v["numero_voo"], 
+                    v["origem"], 
+                    v["destino"], 
+                    v["capacidade"], 
+                    v["taxa_internacional"]
+                )
+            else:
+                novo_voo = VooNacional(
+                    v["numero_voo"], 
+                    v["origem"], 
+                    v["destino"], 
+                    v["capacidade"]
+                )
+            
+            # Restaurar o estado de ocupação guardado
+            novo_voo.lugares_ocupados = v["lugares_ocupados"]
+            novo_voo.passageiros_no_voo = set(v["passageiros_no_voo"])
+            self.voos[v["numero_voo"]] = novo_voo
+
+        # 3. Recriar Bilhetes
+        for b in dados_brutos.get("bilhetes", []):
+            # Recupera os objetos de Passageiro e Voo já criados acima
+            passageiro = self.passageiros.get(b["passaporte_passageiro"])
+            voo = self.voos.get(b["numero_voo"])
+
+            if passageiro and voo:
+                # Usamos __new__ para evitar que o construtor __init__ do Bilhete
+                # tente realizar uma "nova compra" e duplique a reserva no voo.
+                novo_bilhete = Bilhete.__new__(Bilhete)
+                novo_bilhete.id_bilhete = b["id_bilhete"]
+                novo_bilhete.passageiro = passageiro
+                novo_bilhete.voo = voo
+                novo_bilhete.preco = b["preco"]
+                novo_bilhete.estado = b["estado"]
+                novo_bilhete.historico = b["historico"]
+                
+                self.bilhetes.append(novo_bilhete)
 class VooNacional(Voo):
     def __init__(self, numero_voo, origem, destino, capacidade):
         super().__init__(numero_voo, origem, destino, capacidade)
