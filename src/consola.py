@@ -35,6 +35,27 @@ def exibir_menu_principal():
 # --- FUNÇÕES DE AÇÃO (Chamadas pelo mapa_opcoes no main.py) ---
 
 def adicionar_voo():
+    """Interface para criar voos nacionais ou internacionais."""
+    print(f"\n{Fore.WHITE}--- Novo Voo ---")
+    try:
+        num = input(f"{Fore.YELLOW}Número do Voo: {Fore.WHITE}").upper()
+        origem = input(f"{Fore.YELLOW}Origem: {Fore.WHITE}")
+        destino = input(f"{Fore.YELLOW}Destino: {Fore.WHITE}")
+        cap = int(input(f"{Fore.YELLOW}Capacidade: {Fore.WHITE}"))
+        tipo = input(f"{Fore.YELLOW}Tipo ([N]acional/[I]nternacional): {Fore.WHITE}").upper()
+
+        if tipo == 'I':
+            taxa = float(input(f"{Fore.YELLOW}Taxa Internacional (€): {Fore.WHITE}"))
+            sistema.voos[num] = VooInternacional(num, origem, destino, cap, taxa)
+        else:
+            sistema.voos[num] = VooNacional(num, origem, destino, cap)
+        
+        print(f"\n{Fore.GREEN}✅ Voo {num} registado com sucesso!")
+    except ValueError:
+        print(f"\n{Fore.RED}❌ Erro: Insira valores numéricos válidos para capacidade/taxa.")
+    except Exception as e:
+        print(f"\n{Fore.RED}❌ Erro inesperado: {e}")
+    aguardar_enter()
     pass
 
 def registar_passageiro():
