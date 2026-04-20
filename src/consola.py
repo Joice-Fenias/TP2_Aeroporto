@@ -72,8 +72,19 @@ def registar_passageiro():
     aguardar_enter()
     pass
 
-def comprar_bilhete():
-    pass
+def vender_bilhete():
+    """Realiza a venda integrando voo e passageiro."""
+    print(f"\n{Fore.WHITE}--- Venda de Bilhete ---")
+    try:
+        passaporte = input(f"{Fore.YELLOW}Passaporte do Passageiro: {Fore.WHITE}")
+        num_voo = input(f"{Fore.YELLOW}Número do Voo: {Fore.WHITE}").upper()
+        preco = float(input(f"{Fore.YELLOW}Preço Base (€): {Fore.WHITE}"))
+
+        bilhete = sistema.vender_bilhete(passaporte, num_voo, preco)
+        print(f"\n{Fore.GREEN}✨ SUCESSO! {bilhete}")
+    except Exception as e:
+        print(f"\n{Fore.RED}❌ Falha na venda: {e}")
+    aguardar_enter()
 
 def cancelar_bilhete():
     pass
