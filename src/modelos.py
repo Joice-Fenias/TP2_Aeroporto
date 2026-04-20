@@ -172,6 +172,13 @@ class Sistema:
             total_logs.extend(b.historico)
         return sorted(total_logs, key=lambda x: x['data_hora'])
     
+    def preparar_dados_para_guardar(self):
+        """Transforma todos os objetos em dicionários para o JSON."""
+        return {
+            "passageiros": [p.to_dict() for p in self.passageiros.values()],
+            "voos": [v.to_dict() for v in self.voos.values()],
+            "bilhetes": [b.to_dict() for b in self.bilhetes]
+        }
     
 class VooNacional(Voo):
     def __init__(self, numero_voo, origem, destino, capacidade):
