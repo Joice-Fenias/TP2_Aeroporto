@@ -106,4 +106,12 @@ def listar_voos():
     aguardar_enter()
 
 def mostrar_historico():
-    pass
+    """Exibe os logs de todas as transações."""
+    print(f"\n{Fore.MAGENTA}--- Histórico de Transações ---")
+    logs = sistema.obter_historico_geral()
+    if not logs:
+        print(f"{Fore.YELLOW}Sem movimentos registados.")
+    else:
+        for log in logs:
+            print(f"{Fore.WHITE}[{log['data_hora']}] {Fore.GREEN}{log['tipo']}: {Fore.YELLOW}{log['detalhes']}")
+    aguardar_enter()
