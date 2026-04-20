@@ -181,3 +181,12 @@ class VooNacional(Voo):
     def __str__(self):
         return f"✈️ [NACIONAL] {self.numero_voo} | {self.origem} -> {self.destino}"
 
+
+class VooInternacional(Voo):
+    def __init__(self, numero_voo, origem, destino, capacidade, taxa_internacional=50.0):
+        super().__init__(numero_voo, origem, destino, capacidade)
+        self.taxa_internacional = taxa_internacional
+        self.tipo = "Internacional"
+
+    def __str__(self):
+        return f"🌍 [INTERNACIONAL] {self.numero_voo} | {self.origem} -> {self.destino} (Taxa: {self.taxa_internacional}€)"
