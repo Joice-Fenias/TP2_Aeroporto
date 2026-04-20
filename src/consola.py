@@ -86,7 +86,30 @@ def vender_bilhete():
     aguardar_enter()
 
 def cancelar_bilhete():
-    pass
+    """Interface para cancelar um bilhete existente e libertar o lugar no voo."""
+    print(f"\n{Fore.WHITE}--- Cancelar Bilhete ---")
+    try:
+        # 1. Pedir o ID do bilhete
+        id_b = int(input(f"{Fore.YELLOW}Digite o ID do Bilhete a cancelar: {Fore.WHITE}"))
+        
+        # 2. Executar o cancelamento no sistema
+        sistema.cancelar_bilhete(id_b)
+        
+        # 3. Guardar a alteração na Base de Dados (Persistência)
+        from bilhetes import guardar_dados  # Importa a tua função de BD
+        dados_atualizados = sistema.preparar_dados_para_guardar()
+        guardar_dados(dados_atualizados)
+        
+        print(f"\n{Fore.GREEN}✅ Bilhete #{id_b} cancelado com sucesso!")
+        print(f"{Fore.CYAN}ℹ️ O lugar no voo correspondente foi libertado.")
+        
+    except ValueError as e:
+        # Trata erros de ID inexistente ou bilhete já cancelado
+        print(f"\n{Fore.RED}❌ Erro: {e}")
+    except Exception as e:
+        print(f"\n{Fore.RED}❌ Ocorreu um erro inesperado: {e}")
+        
+    aguardar_enter()
 
 def listar_voos():
     """Mostra o estado atual de todos os voos."""
@@ -115,3 +138,6 @@ def mostrar_historico():
         for log in logs:
             print(f"{Fore.WHITE}[{log['data_hora']}] {Fore.GREEN}{log['tipo']}: {Fore.YELLOW}{log['detalhes']}")
     aguardar_enter()
+
+def sair():
+    pass
