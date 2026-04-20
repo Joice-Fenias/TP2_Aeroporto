@@ -171,3 +171,13 @@ class Sistema:
         for b in self.bilhetes:
             total_logs.extend(b.historico)
         return sorted(total_logs, key=lambda x: x['data_hora'])
+    
+    
+class VooNacional(Voo):
+    def __init__(self, numero_voo, origem, destino, capacidade):
+        super().__init__(numero_voo, origem, destino, capacidade)
+        self.tipo = "Nacional"
+
+    def __str__(self):
+        return f"✈️ [NACIONAL] {self.numero_voo} | {self.origem} -> {self.destino}"
+
