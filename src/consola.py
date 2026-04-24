@@ -1,6 +1,7 @@
 import os
 from colorama import Fore, Style, init
 from src.modelos import Sistema, VooNacional, VooInternacional
+from src.voos import TABELA_HORARIOS
 
 # Inicializa as cores
 init(autoreset=True)
@@ -139,47 +140,59 @@ def vender_bilhete():
     aguardar_enter()
 
 def cancelar_bilhete():
-    """Interface para cancelar bilhete com validação de identidade."""
+    """Procura bilhetes por passaporte, lista as opções e pede confirmação."""
     limpar_ecra()
-    print(f"{Fore.MAGENTA}{Style.BRIGHT}--- CANCELAMENTO DE BILHETE ---")
-    
+    print(f"{Fore.MAGENTA}{Style.BRIGHT}--- GESTÃO DE CANCELAMENTOS ---")
+       # 1. Filtrar apenas os bilhetes que estão "Ativo"
+    bilhetes_ativos = [b for b in sistema.bilhetes if b.estado == "Ativo"]
+
+    if not bilhetes_ativos:
+        print(f"\n{Fore.YELLOW}ℹ️ Não existem bilhetes ativos no sistema para cancelar.")
+        aguardar_enter()
+        return
+
+    # 2. Listar com Enumerate
+    print(f"\n{Fore.CYAN}{'#':<4} | {'ID':<4} | {'PASSAGEIRO':<20} | {'VOO':<8} | {'DESTINO'}")
+    print(f"{Fore.WHITE}{'-' * 65}")
+
+    # O enumerate(..., 1) começa a contagem no 1 para ser mais natural para o utilizador
+    for i, b in enumerate(bilhetes_ativos, 1):
+        nome_curto = b.passageiro.nome[:19]
+        print(f"{Fore.YELLOW}{i:<4} {Fore.WHITE}| {b.id_bilhete:<4} | {nome_curto:<20} | {b.voo.numero_voo:<8} | {b.voo.destino}")
+
+    print(f"{Fore.WHITE}{'-' * 65}")
+
+    # 3. Escolha por índice
     try:
-        # 1. Entrada de dados
-        id_b = int(input(f"{Fore.YELLOW}Digite o ID do Bilhete: {Fore.WHITE}"))
-        passaporte_input = input(f"{Fore.YELLOW}Confirme o Passaporte do Titular: {Fore.WHITE}").strip()
+        escolha_idx = int(input(f"\n{Fore.CYAN}Escolha o número (#) do bilhete (ou 0 para sair): {Fore.WHITE}"))
 
-        # 2. Localizar o bilhete no sistema
-        # Assumindo que 'sistema.bilhetes' é um dicionário {id: objeto_bilhete}
-        bilhete = sistema.bilhetes.get(id_b)
+        if escolha_idx == 0:
+            return
 
-        if not bilhete:
-            print(f"\n{Fore.RED}❌ Erro: Bilhete #{id_b} não encontrado.")
-        
-        # 3. Validar se o passaporte coincide com o do passageiro no bilhete
-        elif bilhete.passageiro.passaporte != passaporte_input:
-            print(f"\n{Fore.RED}❌ Erro: O passaporte não corresponde ao titular do bilhete!")
-            print(f"{Fore.RED}Ação bloqueada por segurança.")
-        
-        # 4. Verificar se o bilhete já está cancelado
-        elif bilhete.estado == "Cancelado":
-            print(f"\n{Fore.YELLOW}⚠️ Este bilhete já se encontra cancelado no sistema.")
-
-        else:
-            # 5. Execução do cancelamento
-            # Chama o método que liberta o lugar no voo e altera o estado do bilhete
-            sistema.cancelar_bilhete(id_b)
+        # Validar se o número escolhido está dentro do intervalo da lista
+        if 1 <= escolha_idx <= len(bilhetes_ativos):
+            # Recuperamos o bilhete exato da nossa lista filtrada
+            bilhete_selecionado = bilhetes_ativos[escolha_idx - 1]
             
-            print(f"\n{Fore.GREEN}✅ CANCELAMENTO CONCLUÍDO COM SUCESSO!")
-            print(f"{Fore.WHITE}ID: {Fore.CYAN}#{id_b}")
-            print(f"{Fore.WHITE}Passageiro: {Fore.CYAN}{bilhete.passageiro.nome}")
-            print(f"{Fore.WHITE}Voo: {Fore.CYAN}{bilhete.voo.numero_voo}")
-            print(f"\n{Fore.YELLOW}ℹ️ O lugar foi libertado e o histórico de transações atualizado.")
+            # Confirmação
+            print(f"\n{Fore.RED}CONFIRMAR CANCELAMENTO?")
+            print(f"{Fore.WHITE}Passageiro: {Fore.YELLOW}{bilhete_selecionado.passageiro.nome}")
+            print(f"{Fore.WHITE}Voo: {Fore.YELLOW}{bilhete_selecionado.voo.numero_voo}")
+            
+            confirmar = input(f"\n{Fore.WHITE}Digite {Fore.GREEN}'S'{Fore.WHITE} para confirmar: ").upper().strip()
+
+            if confirmar == 'S':
+                # Usamos o ID real do bilhete para chamar a função do sistema
+                sistema.cancelar_bilhete(bilhete_selecionado.id_bilhete)
+                print(f"\n{Fore.GREEN}✅ SUCESSO! O bilhete #{bilhete_selecionado.id_bilhete} foi anulado.")
+            else:
+                print(f"\n{Fore.YELLOW}Operação cancelada.")
+        else:
+            print(f"\n{Fore.RED}❌ Opção inválida! Escolha um número entre 1 e {len(bilhetes_ativos)}.")
 
     except ValueError:
-        print(f"\n{Fore.RED}❌ Erro: O ID do bilhete deve ser um número inteiro.")
-    except Exception as e:
-        print(f"\n{Fore.RED}❌ Ocorreu um erro inesperado: {e}")
-    
+        print(f"\n{Fore.RED}❌ Erro: Insira apenas números.")
+
     aguardar_enter()
 
 def listar_voos():
@@ -209,4 +222,45 @@ def mostrar_historico():
         for log in logs:
             print(f"{Fore.WHITE}[{log['data_hora']}] {Fore.GREEN}{log['tipo']}: {Fore.YELLOW}{log['detalhes']}")
     aguardar_enter()
+    
+def ver_passageiros_por_voo():
+    """Exibe quem está dentro de um voo específico (Admin/Balconista)."""
+    limpar_ecra()
+    print(f"{Fore.MAGENTA}{Style.BRIGHT}--- MANIFESTO DE PASSAGEIROS ---")
 
+    # 1. Verificar se há voos
+    if not sistema.voos:
+        print(f"\n{Fore.RED}Nenhum voo disponível no momento.")
+        aguardar_enter()
+        return
+
+    # 2. Listar voos para ajudar a escolha
+    print(f"\n{Fore.CYAN}Voos Ativos:")
+    for v in sistema.voos.values():
+        print(f"- {v.numero_voo} ({v.origem} -> {v.destino})")
+    
+    num_voo = input(f"\n{Fore.YELLOW}Digite o Número do Voo: {Fore.WHITE}").upper().strip()
+    
+    # 3. Validar e mostrar passageiros
+    if num_voo not in sistema.voos:
+        print(f"\n{Fore.RED}❌ Voo {num_voo} não encontrado!")
+    else:
+        v = sistema.voos[num_voo]
+        print(f"\n{Fore.CYAN}Passageiros Confirmados no Voo {num_voo}:")
+        print(f"{Fore.WHITE}{'-' * 45}")
+
+        # O NOME CORRETO É: v.passageiros_no_voo
+        if not v.passageiros_no_voo:
+            print(f"{Fore.YELLOW}Este voo ainda não tem passageiros.")
+        else:
+            for p_id in v.passageiros_no_voo:
+                # O SISTEMA guarda o dicionário de passageiros
+                p = sistema.passageiros.get(p_id)
+                if p:
+                    print(f"{Fore.GREEN}✔ {Fore.WHITE}{p.nome:<25} | {Fore.YELLOW}{p_id}")
+                else:
+                    print(f"{Fore.RED}⚠ ID {p_id} não encontrado no registo central.")
+        
+        print(f"{Fore.WHITE}{'-' * 45}")
+
+    aguardar_enter()
