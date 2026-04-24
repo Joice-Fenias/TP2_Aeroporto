@@ -91,17 +91,35 @@ def registar_passageiro():
     aguardar_enter()
 
 def vender_bilhete():
-    """Realiza a venda integrando voo e passageiro."""
-    print(f"\n{Fore.WHITE}--- Venda de Bilhete ---")
-    try:
-        passaporte = input(f"{Fore.YELLOW}Passaporte do Passageiro: {Fore.WHITE}")
-        num_voo = input(f"{Fore.YELLOW}Número do Voo: {Fore.WHITE}").upper()
-        preco = float(input(f"{Fore.YELLOW}Preço Base (€): {Fore.WHITE}"))
+    """Lógica: Escolhe voo primeiro, depois insere dados do passageiro."""
+    limpar_ecra()
+    print(f"{Fore.MAGENTA}--- VENDA DE BILHETE ---")
+    
+    # 1. Mostra voos ativos no sistema para o cliente escolher
+    if not sistema.voos:
+        print(f"{Fore.RED}Nenhum voo disponível no momento.")
+        aguardar_enter()
+        return
 
-        bilhete = sistema.vender_bilhete(passaporte, num_voo, preco)
-        print(f"\n{Fore.GREEN}✨ SUCESSO! {bilhete}")
-    except Exception as e:
-        print(f"\n{Fore.RED}❌ Falha na venda: {e}")
+    print(f"\n{Fore.CYAN}Voos Disponíveis:")
+    for v in sistema.voos.values():
+        print(f"- {v.numero_voo} para {v.destino} ({v.lugares_ocupados}/{v.capacidade})")
+    
+    num_voo = input(f"\n{Fore.YELLOW}Digite o Número do Voo: {Fore.WHITE}").upper()
+    
+    if num_voo not in sistema.voos:
+        print(f"{Fore.RED}❌ Voo não encontrado!")
+    else:
+        nome = input(f"{Fore.YELLOW}Nome do Passageiro: {Fore.WHITE}")
+        passaporte = input(f"{Fore.YELLOW}Nº Passaporte: {Fore.WHITE}")
+        preco = float(input(f"{Fore.YELLOW}Preço Base (€): {Fore.WHITE}"))
+        
+        try:
+            sistema.criar_passageiro(nome, passaporte)
+            bilhete = sistema.vender_bilhete(passaporte, num_voo, preco)
+            print(f"\n{Fore.GREEN}✨ SUCESSO! {bilhete}")
+        except Exception as e:
+            print(f"\n{Fore.RED}❌ Falha: {e}")
     aguardar_enter()
 
 def cancelar_bilhete():
