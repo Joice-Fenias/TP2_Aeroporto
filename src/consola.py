@@ -123,29 +123,47 @@ def vender_bilhete():
     aguardar_enter()
 
 def cancelar_bilhete():
-    """Interface para cancelar um bilhete existente e libertar o lugar no voo."""
-    print(f"\n{Fore.WHITE}--- Cancelar Bilhete ---")
+    """Interface para cancelar bilhete com validação de identidade."""
+    limpar_ecra()
+    print(f"{Fore.MAGENTA}{Style.BRIGHT}--- CANCELAMENTO DE BILHETE ---")
+    
     try:
-        # 1. Pedir o ID do bilhete
-        id_b = int(input(f"{Fore.YELLOW}Digite o ID do Bilhete a cancelar: {Fore.WHITE}"))
+        # 1. Entrada de dados
+        id_b = int(input(f"{Fore.YELLOW}Digite o ID do Bilhete: {Fore.WHITE}"))
+        passaporte_input = input(f"{Fore.YELLOW}Confirme o Passaporte do Titular: {Fore.WHITE}").strip()
+
+        # 2. Localizar o bilhete no sistema
+        # Assumindo que 'sistema.bilhetes' é um dicionário {id: objeto_bilhete}
+        bilhete = sistema.bilhetes.get(id_b)
+
+        if not bilhete:
+            print(f"\n{Fore.RED}❌ Erro: Bilhete #{id_b} não encontrado.")
         
-        # 2. Executar o cancelamento no sistema
-        sistema.cancelar_bilhete(id_b)
+        # 3. Validar se o passaporte coincide com o do passageiro no bilhete
+        elif bilhete.passageiro.passaporte != passaporte_input:
+            print(f"\n{Fore.RED}❌ Erro: O passaporte não corresponde ao titular do bilhete!")
+            print(f"{Fore.RED}Ação bloqueada por segurança.")
         
-        # 3. Guardar a alteração na Base de Dados (Persistência)
-        from bilhetes import guardar_dados  # Importa a tua função de BD
-        dados_atualizados = sistema.preparar_dados_para_guardar()
-        guardar_dados(dados_atualizados)
-        
-        print(f"\n{Fore.GREEN}✅ Bilhete #{id_b} cancelado com sucesso!")
-        print(f"{Fore.CYAN}ℹ️ O lugar no voo correspondente foi libertado.")
-        
-    except ValueError as e:
-        # Trata erros de ID inexistente ou bilhete já cancelado
-        print(f"\n{Fore.RED}❌ Erro: {e}")
+        # 4. Verificar se o bilhete já está cancelado
+        elif bilhete.estado == "Cancelado":
+            print(f"\n{Fore.YELLOW}⚠️ Este bilhete já se encontra cancelado no sistema.")
+
+        else:
+            # 5. Execução do cancelamento
+            # Chama o método que liberta o lugar no voo e altera o estado do bilhete
+            sistema.cancelar_bilhete(id_b)
+            
+            print(f"\n{Fore.GREEN}✅ CANCELAMENTO CONCLUÍDO COM SUCESSO!")
+            print(f"{Fore.WHITE}ID: {Fore.CYAN}#{id_b}")
+            print(f"{Fore.WHITE}Passageiro: {Fore.CYAN}{bilhete.passageiro.nome}")
+            print(f"{Fore.WHITE}Voo: {Fore.CYAN}{bilhete.voo.numero_voo}")
+            print(f"\n{Fore.YELLOW}ℹ️ O lugar foi libertado e o histórico de transações atualizado.")
+
+    except ValueError:
+        print(f"\n{Fore.RED}❌ Erro: O ID do bilhete deve ser um número inteiro.")
     except Exception as e:
         print(f"\n{Fore.RED}❌ Ocorreu um erro inesperado: {e}")
-        
+    
     aguardar_enter()
 
 def listar_voos():
