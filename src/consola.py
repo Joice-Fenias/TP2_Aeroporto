@@ -36,25 +36,58 @@ def exibir_menu_principal():
 
 def adicionar_voo():
     """Interface para criar voos nacionais ou internacionais."""
-    print(f"\n{Fore.WHITE}--- Novo Voo ---")
-    try:
-        num = input(f"{Fore.YELLOW}Número do Voo: {Fore.WHITE}").upper()
-        origem = input(f"{Fore.YELLOW}Origem: {Fore.WHITE}")
-        destino = input(f"{Fore.YELLOW}Destino: {Fore.WHITE}")
-        cap = int(input(f"{Fore.YELLOW}Capacidade: {Fore.WHITE}"))
-        tipo = input(f"{Fore.YELLOW}Tipo ([N]acional/[I]nternacional): {Fore.WHITE}").upper()
+    limpar_ecra()
+    print(f"{Fore.MAGENTA}{Style.BRIGHT}--- PAINEL DE OPERAÇÕES: AEROPORTO DE FARO ---")
+    
+    # Listagem formatada
+    print(f"\n{Fore.CYAN}{'ID':<4} | {'VOO':<8} | {'DESTINO':<12} | {'HORA':<8} | {'TIPO'}")
+    print(f"{Fore.WHITE}{'-' * 55}")
+    
+    for idx, info in TABELA_HORARIOS.items():
+        tipo_txt = "Nacional" if info['tipo'] == 'N' else "Intl"
+        print(f"{Fore.YELLOW}{idx:<4} {Fore.WHITE}| {info['voo']:<8} | {info['destino']:<12} | {info['hora']:<8} | {tipo_txt}")
+    
+    print(f"{Fore.YELLOW}99   {Fore.WHITE}| Inserção Manual")
 
-        if tipo == 'I':
-            taxa = float(input(f"{Fore.YELLOW}Taxa Internacional (€): {Fore.WHITE}"))
-            sistema.voos[num] = VooInternacional(num, origem, destino, cap, taxa)
+    try:
+        escolha = input(f"\n{Fore.CYAN}Selecione o ID da rota: ")
+
+        if escolha == "99":
+            # Lógica manual simplificada
+            num = input(f"{Fore.YELLOW}Número do Voo: {Fore.WHITE}").upper()
+            destino = input(f"{Fore.YELLOW}Destino: {Fore.WHITE}")
+            cap = int(input(f"{Fore.YELLOW}Capacidade: {Fore.WHITE}"))
+            tipo = input(f"{Fore.YELLOW}Tipo (N/I): {Fore.WHITE}").upper()
+            if tipo == 'I':
+                taxa = float(input(f"{Fore.YELLOW}Taxa (€): {Fore.WHITE}"))
+                sistema.voos[num] = VooInternacional(num, "Faro", destino, cap, taxa)
+            else:
+                sistema.voos[num] = VooNacional(num, "Faro", destino, cap)
+            print(f"\n{Fore.GREEN}✅ Voo {num} adicionado manualmente.")
+
+        elif escolha in TABELA_HORARIOS:
+            dados = TABELA_HORARIOS[escolha]
+            num_voo = dados["voo"]
+            
+            if num_voo in sistema.voos:
+                print(f"\n{Fore.RED}⚠️ O voo {num_voo} já está ativo!")
+            else:
+                # Criar o objeto conforme o tipo vindo do ficheiro voos.py
+                if dados["tipo"] == "I":
+                    sistema.voos[num_voo] = VooInternacional(
+                        num_voo, "Faro", dados["destino"], dados["cap"], dados["taxa"]
+                    )
+                else:
+                    sistema.voos[num_voo] = VooNacional(
+                        num_voo, "Faro", dados["destino"], dados["cap"]
+                    )
+                print(f"\n{Fore.GREEN}✅ Voo {num_voo} para {dados['destino']} ({dados['hora']}) ativado!")
         else:
-            sistema.voos[num] = VooNacional(num, origem, destino, cap)
-        
-        print(f"\n{Fore.GREEN}✅ Voo {num} registado com sucesso!")
-    except ValueError:
-        print(f"\n{Fore.RED}❌ Erro: Insira valores numéricos válidos para capacidade/taxa.")
+            print(f"\n{Fore.RED}❌ Seleção inválida.")
+
     except Exception as e:
-        print(f"\n{Fore.RED}❌ Erro inesperado: {e}")
+        print(f"\n{Fore.RED}❌ Erro ao configurar voo: {e}")
+    
     aguardar_enter()
 
 
