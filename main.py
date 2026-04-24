@@ -1,6 +1,6 @@
 import time
-import consola as ui
-from bilhetes import carregar_dados, guardar_dados  # Importa as tuas funções de JSON
+from src import consola as ui
+from src.base_dados import carregar_dados, guardar_dados  # Importa as tuas funções de JSON
 
 def main():
     # 1. CARREGAMENTO INICIAL (Persistence Check)
@@ -9,7 +9,7 @@ def main():
         dados_base = carregar_dados()
         ui.sistema.carregar_de_dados(dados_base)
     except Exception as e:
-        print(f"{ui.Fore.RED}⚠️ Aviso: Erro ao carregar base de dados. Iniciando vazio.")
+        print(f"{ui.Fore.RED},{e})⚠️ Aviso: Erro ao carregar base de dados. Iniciando vazio.")
         time.sleep(1.5)
 
     # 2. MAPA DE OPÇÕES (The "Dict" Logic)

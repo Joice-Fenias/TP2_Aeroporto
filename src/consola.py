@@ -1,6 +1,6 @@
 import os
 from colorama import Fore, Style, init
-from modelos import Sistema, VooNacional, VooInternacional
+from src.modelos import Sistema, VooNacional, VooInternacional
 
 # Inicializa as cores
 init(autoreset=True)
