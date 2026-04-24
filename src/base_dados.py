@@ -32,4 +32,3 @@ def guardar_dados(dados):
         json.dump(dados, ficheiro, indent=2)
 
 
-carregar_dados()
