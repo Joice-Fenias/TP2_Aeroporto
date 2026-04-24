@@ -17,6 +17,22 @@ def aguardar_enter():
     print(f"\n{Fore.CYAN}Pressione Enter para voltar ao menu...")
     input()
 
+def exibir_menu_personalizado(titulo, mapa_opcoes):
+    """Gera um menu visual baseado no perfil (Admin, Balconista ou Cliente)."""
+    limpar_ecra()
+    print(f"{Fore.MAGENTA}{Style.BRIGHT}{'=' * 45}")
+    print(f"{Fore.CYAN}{Style.BRIGHT}    {titulo} - AIR LESTI")
+    print(f"{Fore.MAGENTA}{Style.BRIGHT}{'=' * 45}")
+    
+    # Este loop percorre o dicionário que o main enviou e cria as linhas do menu
+    for tecla, funcao in mapa_opcoes.items():
+        # Pega no nome da função e torna-o bonito (ex: adicionar_voo -> Adicionar Voo)
+        nome_label = funcao.__name__.replace("_", " ").title()
+        print(f"{Fore.YELLOW}{tecla}.{Fore.WHITE} {nome_label}")
+    
+    print(f"{Fore.YELLOW}0.{Fore.RED} Voltar ao Menu de Perfis")
+    return input(f"\n{Fore.CYAN}Escolha uma opção: ")
+
 def exibir_menu_principal():
     """Exibe o menu estilizado e retorna a opção."""
     limpar_ecra()
@@ -193,6 +209,16 @@ def mostrar_historico():
         for log in logs:
             print(f"{Fore.WHITE}[{log['data_hora']}] {Fore.GREEN}{log['tipo']}: {Fore.YELLOW}{log['detalhes']}")
     aguardar_enter()
+    
+def ver_passageiros_por_voo():
+    """Função extra para Admin/Balconista"""
+    num = input("Voo: ").upper()
+    v = sistema.voos.get(num)
+    if v:
+        print(f"\nPassageiros em {num}:")
+        for p_id in v.passageiros_confirmados:
+            p = sistema.passageiros.get(p_id)
+            print(f"- {p.nome} ({p_id})")
+    else: print("Não encontrado.")
+    aguardar_enter()
 
-def sair():
-    pass
