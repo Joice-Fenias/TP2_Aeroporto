@@ -35,11 +35,10 @@ def exibir_menu_principal():
 # --- FUNÇÕES DE AÇÃO (Chamadas pelo mapa_opcoes no main.py) ---
 
 def adicionar_voo():
-    """Interface para criar voos nacionais ou internacionais."""
+    """Interface para abrir voos usando a tabela global."""
     limpar_ecra()
     print(f"{Fore.MAGENTA}{Style.BRIGHT}--- PAINEL DE OPERAÇÕES: AEROPORTO DE FARO ---")
     
-    # Listagem formatada
     print(f"\n{Fore.CYAN}{'ID':<4} | {'VOO':<8} | {'DESTINO':<12} | {'HORA':<8} | {'TIPO'}")
     print(f"{Fore.WHITE}{'-' * 55}")
     
@@ -53,7 +52,6 @@ def adicionar_voo():
         escolha = input(f"\n{Fore.CYAN}Selecione o ID da rota: ")
 
         if escolha == "99":
-            # Lógica manual simplificada
             num = input(f"{Fore.YELLOW}Número do Voo: {Fore.WHITE}").upper()
             destino = input(f"{Fore.YELLOW}Destino: {Fore.WHITE}")
             cap = int(input(f"{Fore.YELLOW}Capacidade: {Fore.WHITE}"))
@@ -63,31 +61,19 @@ def adicionar_voo():
                 sistema.voos[num] = VooInternacional(num, "Faro", destino, cap, taxa)
             else:
                 sistema.voos[num] = VooNacional(num, "Faro", destino, cap)
-            print(f"\n{Fore.GREEN}✅ Voo {num} adicionado manualmente.")
-
+        
         elif escolha in TABELA_HORARIOS:
-            dados = TABELA_HORARIOS[escolha]
-            num_voo = dados["voo"]
-            
-            if num_voo in sistema.voos:
-                print(f"\n{Fore.RED}⚠️ O voo {num_voo} já está ativo!")
+            d = TABELA_HORARIOS[escolha]
+            if d["voo"] in sistema.voos:
+                print(f"\n{Fore.RED}⚠️ O voo {d['voo']} já está ativo!")
             else:
-                # Criar o objeto conforme o tipo vindo do ficheiro voos.py
-                if dados["tipo"] == "I":
-                    sistema.voos[num_voo] = VooInternacional(
-                        num_voo, "Faro", dados["destino"], dados["cap"], dados["taxa"]
-                    )
+                if d["tipo"] == "I":
+                    sistema.voos[d["voo"]] = VooInternacional(d["voo"], "Faro", d["destino"], d["cap"], d["taxa"])
                 else:
-                    sistema.voos[num_voo] = VooNacional(
-                        num_voo, "Faro", dados["destino"], dados["cap"]
-                    )
-                print(f"\n{Fore.GREEN}✅ Voo {num_voo} para {dados['destino']} ({dados['hora']}) ativado!")
-        else:
-            print(f"\n{Fore.RED}❌ Seleção inválida.")
-
+                    sistema.voos[d["voo"]] = VooNacional(d["voo"], "Faro", d["destino"], d["cap"])
+                print(f"\n{Fore.GREEN}✅ Voo {d['voo']} ativado!")
     except Exception as e:
-        print(f"\n{Fore.RED}❌ Erro ao configurar voo: {e}")
-    
+        print(f"\n{Fore.RED}❌ Erro: {e}")
     aguardar_enter()
 
 
