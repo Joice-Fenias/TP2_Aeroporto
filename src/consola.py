@@ -209,16 +209,4 @@ def mostrar_historico():
         for log in logs:
             print(f"{Fore.WHITE}[{log['data_hora']}] {Fore.GREEN}{log['tipo']}: {Fore.YELLOW}{log['detalhes']}")
     aguardar_enter()
-    
-def ver_passageiros_por_voo():
-    """Função extra para Admin/Balconista"""
-    num = input("Voo: ").upper()
-    v = sistema.voos.get(num)
-    if v:
-        print(f"\nPassageiros em {num}:")
-        for p_id in v.passageiros_confirmados:
-            p = sistema.passageiros.get(p_id)
-            print(f"- {p.nome} ({p_id})")
-    else: print("Não encontrado.")
-    aguardar_enter()
 
