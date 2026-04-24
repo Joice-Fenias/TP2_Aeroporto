@@ -9,7 +9,7 @@ def main():
         dados_base = carregar_dados()
         ui.sistema.carregar_de_dados(dados_base)
     except Exception as e:
-        print(f"{ui.Fore.RED}⚠️ Aviso: Erro ao carregar base de dados. Iniciando vazio.")
+        print(f"{ui.Fore.RED},{e})⚠️ Aviso: Erro ao carregar base de dados. Iniciando vazio.")
         time.sleep(1.5)
 
     # 2. MAPA DE OPÇÕES (The "Dict" Logic)
