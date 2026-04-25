@@ -1,6 +1,7 @@
 import os
 from colorama import Fore, Style, init
 from src.modelos import Sistema, VooNacional, VooInternacional
+from src.voos import TABELA_HORARIOS
 
 # Inicializa as cores
 init(autoreset=True)
@@ -16,6 +17,22 @@ def aguardar_enter():
     """Pausa a execução para o utilizador ler o feedback."""
     print(f"\n{Fore.CYAN}Pressione Enter para voltar ao menu...")
     input()
+
+def exibir_menu_personalizado(titulo, mapa_opcoes):
+    """Gera um menu visual baseado no perfil (Admin, Balconista ou Cliente)."""
+    limpar_ecra()
+    print(f"{Fore.MAGENTA}{Style.BRIGHT}{'=' * 45}")
+    print(f"{Fore.CYAN}{Style.BRIGHT}    {titulo} - AIR LESTI")
+    print(f"{Fore.MAGENTA}{Style.BRIGHT}{'=' * 45}")
+    
+    # Este loop percorre o dicionário que o main enviou e cria as linhas do menu
+    for tecla, funcao in mapa_opcoes.items():
+        # Pega no nome da função e torna-o bonito (ex: adicionar_voo -> Adicionar Voo)
+        nome_label = funcao.__name__.replace("_", " ").title()
+        print(f"{Fore.YELLOW}{tecla}.{Fore.WHITE} {nome_label}")
+    
+    print(f"{Fore.YELLOW}0.{Fore.RED} Voltar ao Menu de Perfis")
+    return input(f"\n{Fore.CYAN}Escolha uma opção: ")
 
 def exibir_menu_principal():
     """Exibe o menu estilizado e retorna a opção."""
@@ -35,26 +52,45 @@ def exibir_menu_principal():
 # --- FUNÇÕES DE AÇÃO (Chamadas pelo mapa_opcoes no main.py) ---
 
 def adicionar_voo():
-    """Interface para criar voos nacionais ou internacionais."""
-    print(f"\n{Fore.WHITE}--- Novo Voo ---")
-    try:
-        num = input(f"{Fore.YELLOW}Número do Voo: {Fore.WHITE}").upper()
-        origem = input(f"{Fore.YELLOW}Origem: {Fore.WHITE}")
-        destino = input(f"{Fore.YELLOW}Destino: {Fore.WHITE}")
-        cap = int(input(f"{Fore.YELLOW}Capacidade: {Fore.WHITE}"))
-        tipo = input(f"{Fore.YELLOW}Tipo ([N]acional/[I]nternacional): {Fore.WHITE}").upper()
+    """Interface para abrir voos usando a tabela global."""
+    limpar_ecra()
+    print(f"{Fore.MAGENTA}{Style.BRIGHT}--- PAINEL DE OPERAÇÕES: AEROPORTO DE FARO ---")
+    
+    print(f"\n{Fore.CYAN}{'ID':<4} | {'VOO':<8} | {'DESTINO':<12} | {'HORA':<8} | {'TIPO'}")
+    print(f"{Fore.WHITE}{'-' * 55}")
+    
+    for idx, info in TABELA_HORARIOS.items():
+        tipo_txt = "Nacional" if info['tipo'] == 'N' else "Intl"
+        print(f"{Fore.YELLOW}{idx:<4} {Fore.WHITE}| {info['voo']:<8} | {info['destino']:<12} | {info['hora']:<8} | {tipo_txt}")
+    
+    print(f"{Fore.YELLOW}99   {Fore.WHITE}| Inserção Manual")
 
-        if tipo == 'I':
-            taxa = float(input(f"{Fore.YELLOW}Taxa Internacional (€): {Fore.WHITE}"))
-            sistema.voos[num] = VooInternacional(num, origem, destino, cap, taxa)
-        else:
-            sistema.voos[num] = VooNacional(num, origem, destino, cap)
+    try:
+        escolha = input(f"\n{Fore.CYAN}Selecione o ID da rota: ")
+
+        if escolha == "99":
+            num = input(f"{Fore.YELLOW}Número do Voo: {Fore.WHITE}").upper()
+            destino = input(f"{Fore.YELLOW}Destino: {Fore.WHITE}")
+            cap = int(input(f"{Fore.YELLOW}Capacidade: {Fore.WHITE}"))
+            tipo = input(f"{Fore.YELLOW}Tipo (N/I): {Fore.WHITE}").upper()
+            if tipo == 'I':
+                taxa = float(input(f"{Fore.YELLOW}Taxa (€): {Fore.WHITE}"))
+                sistema.voos[num] = VooInternacional(num, "Faro", destino, cap, taxa)
+            else:
+                sistema.voos[num] = VooNacional(num, "Faro", destino, cap)
         
-        print(f"\n{Fore.GREEN}✅ Voo {num} registado com sucesso!")
-    except ValueError:
-        print(f"\n{Fore.RED}❌ Erro: Insira valores numéricos válidos para capacidade/taxa.")
+        elif escolha in TABELA_HORARIOS:
+            d = TABELA_HORARIOS[escolha]
+            if d["voo"] in sistema.voos:
+                print(f"\n{Fore.RED}⚠️ O voo {d['voo']} já está ativo!")
+            else:
+                if d["tipo"] == "I":
+                    sistema.voos[d["voo"]] = VooInternacional(d["voo"], "Faro", d["destino"], d["cap"], d["taxa"])
+                else:
+                    sistema.voos[d["voo"]] = VooNacional(d["voo"], "Faro", d["destino"], d["cap"])
+                print(f"\n{Fore.GREEN}✅ Voo {d['voo']} ativado!")
     except Exception as e:
-        print(f"\n{Fore.RED}❌ Erro inesperado: {e}")
+        print(f"\n{Fore.RED}❌ Erro: {e}")
     aguardar_enter()
 
 
@@ -72,43 +108,91 @@ def registar_passageiro():
     aguardar_enter()
 
 def vender_bilhete():
-    """Realiza a venda integrando voo e passageiro."""
-    print(f"\n{Fore.WHITE}--- Venda de Bilhete ---")
-    try:
-        passaporte = input(f"{Fore.YELLOW}Passaporte do Passageiro: {Fore.WHITE}")
-        num_voo = input(f"{Fore.YELLOW}Número do Voo: {Fore.WHITE}").upper()
-        preco = float(input(f"{Fore.YELLOW}Preço Base (€): {Fore.WHITE}"))
+    """Lógica: Escolhe voo primeiro, depois insere dados do passageiro."""
+    limpar_ecra()
+    print(f"{Fore.MAGENTA}--- VENDA DE BILHETE ---")
+    
+    # 1. Mostra voos ativos no sistema para o cliente escolher
+    if not sistema.voos:
+        print(f"{Fore.RED}Nenhum voo disponível no momento.")
+        aguardar_enter()
+        return
 
-        bilhete = sistema.vender_bilhete(passaporte, num_voo, preco)
-        print(f"\n{Fore.GREEN}✨ SUCESSO! {bilhete}")
-    except Exception as e:
-        print(f"\n{Fore.RED}❌ Falha na venda: {e}")
+    print(f"\n{Fore.CYAN}Voos Disponíveis:")
+    for v in sistema.voos.values():
+        print(f"- {v.numero_voo} para {v.destino} ({v.lugares_ocupados}/{v.capacidade})")
+    
+    num_voo = input(f"\n{Fore.YELLOW}Digite o Número do Voo: {Fore.WHITE}").upper()
+    
+    if num_voo not in sistema.voos:
+        print(f"{Fore.RED}❌ Voo não encontrado!")
+    else:
+        nome = input(f"{Fore.YELLOW}Nome do Passageiro: {Fore.WHITE}")
+        passaporte = input(f"{Fore.YELLOW}Nº Passaporte: {Fore.WHITE}")
+        preco = float(input(f"{Fore.YELLOW}Preço Base (€): {Fore.WHITE}"))
+        
+        try:
+            sistema.criar_passageiro(nome, passaporte)
+            bilhete = sistema.vender_bilhete(passaporte, num_voo, preco)
+            print(f"\n{Fore.GREEN}✨ SUCESSO! {bilhete}")
+        except Exception as e:
+            print(f"\n{Fore.RED}❌ Falha: {e}")
     aguardar_enter()
 
 def cancelar_bilhete():
-    """Interface para cancelar um bilhete existente e libertar o lugar no voo."""
-    print(f"\n{Fore.WHITE}--- Cancelar Bilhete ---")
+    """Procura bilhetes por passaporte, lista as opções e pede confirmação."""
+    limpar_ecra()
+    print(f"{Fore.MAGENTA}{Style.BRIGHT}--- GESTÃO DE CANCELAMENTOS ---")
+       # 1. Filtrar apenas os bilhetes que estão "Ativo"
+    bilhetes_ativos = [b for b in sistema.bilhetes if b.estado == "Ativo"]
+
+    if not bilhetes_ativos:
+        print(f"\n{Fore.YELLOW}ℹ️ Não existem bilhetes ativos no sistema para cancelar.")
+        aguardar_enter()
+        return
+
+    # 2. Listar com Enumerate
+    print(f"\n{Fore.CYAN}{'#':<4} | {'ID':<4} | {'PASSAGEIRO':<20} | {'VOO':<8} | {'DESTINO'}")
+    print(f"{Fore.WHITE}{'-' * 65}")
+
+    # O enumerate(..., 1) começa a contagem no 1 para ser mais natural para o utilizador
+    for i, b in enumerate(bilhetes_ativos, 1):
+        nome_curto = b.passageiro.nome[:19]
+        print(f"{Fore.YELLOW}{i:<4} {Fore.WHITE}| {b.id_bilhete:<4} | {nome_curto:<20} | {b.voo.numero_voo:<8} | {b.voo.destino}")
+
+    print(f"{Fore.WHITE}{'-' * 65}")
+
+    # 3. Escolha por índice
     try:
-        # 1. Pedir o ID do bilhete
-        id_b = int(input(f"{Fore.YELLOW}Digite o ID do Bilhete a cancelar: {Fore.WHITE}"))
-        
-        # 2. Executar o cancelamento no sistema
-        sistema.cancelar_bilhete(id_b)
-        
-        # 3. Guardar a alteração na Base de Dados (Persistência)
-        from bilhetes import guardar_dados  # Importa a tua função de BD
-        dados_atualizados = sistema.preparar_dados_para_guardar()
-        guardar_dados(dados_atualizados)
-        
-        print(f"\n{Fore.GREEN}✅ Bilhete #{id_b} cancelado com sucesso!")
-        print(f"{Fore.CYAN}ℹ️ O lugar no voo correspondente foi libertado.")
-        
-    except ValueError as e:
-        # Trata erros de ID inexistente ou bilhete já cancelado
-        print(f"\n{Fore.RED}❌ Erro: {e}")
-    except Exception as e:
-        print(f"\n{Fore.RED}❌ Ocorreu um erro inesperado: {e}")
-        
+        escolha_idx = int(input(f"\n{Fore.CYAN}Escolha o número (#) do bilhete (ou 0 para sair): {Fore.WHITE}"))
+
+        if escolha_idx == 0:
+            return
+
+        # Validar se o número escolhido está dentro do intervalo da lista
+        if 1 <= escolha_idx <= len(bilhetes_ativos):
+            # Recuperamos o bilhete exato da nossa lista filtrada
+            bilhete_selecionado = bilhetes_ativos[escolha_idx - 1]
+            
+            # Confirmação
+            print(f"\n{Fore.RED}CONFIRMAR CANCELAMENTO?")
+            print(f"{Fore.WHITE}Passageiro: {Fore.YELLOW}{bilhete_selecionado.passageiro.nome}")
+            print(f"{Fore.WHITE}Voo: {Fore.YELLOW}{bilhete_selecionado.voo.numero_voo}")
+            
+            confirmar = input(f"\n{Fore.WHITE}Digite {Fore.GREEN}'S'{Fore.WHITE} para confirmar: ").upper().strip()
+
+            if confirmar == 'S':
+                # Usamos o ID real do bilhete para chamar a função do sistema
+                sistema.cancelar_bilhete(bilhete_selecionado.id_bilhete)
+                print(f"\n{Fore.GREEN}✅ SUCESSO! O bilhete #{bilhete_selecionado.id_bilhete} foi anulado.")
+            else:
+                print(f"\n{Fore.YELLOW}Operação cancelada.")
+        else:
+            print(f"\n{Fore.RED}❌ Opção inválida! Escolha um número entre 1 e {len(bilhetes_ativos)}.")
+
+    except ValueError:
+        print(f"\n{Fore.RED}❌ Erro: Insira apenas números.")
+
     aguardar_enter()
 
 def listar_voos():
@@ -138,19 +222,45 @@ def mostrar_historico():
         for log in logs:
             print(f"{Fore.WHITE}[{log['data_hora']}] {Fore.GREEN}{log['tipo']}: {Fore.YELLOW}{log['detalhes']}")
     aguardar_enter()
-
-def sair():
-    pass
-
+    
 def ver_passageiros_por_voo():
-    """Função extra para Admin/Balconista"""
-    num = input("Voo: ").upper()
-    v = sistema.voos.get(num)
-    if v:
-        print(f"\nPassageiros em {num}:")
-        for p_id in v.passageiros_confirmados:
-            p = sistema.passageiros.get(p_id)
-            print(f"- {p.nome} ({p_id})")
+    """Exibe quem está dentro de um voo específico (Admin/Balconista)."""
+    limpar_ecra()
+    print(f"{Fore.MAGENTA}{Style.BRIGHT}--- MANIFESTO DE PASSAGEIROS ---")
+
+    # 1. Verificar se há voos
+    if not sistema.voos:
+        print(f"\n{Fore.RED}Nenhum voo disponível no momento.")
+        aguardar_enter()
+        return
+
+    # 2. Listar voos para ajudar a escolha
+    print(f"\n{Fore.CYAN}Voos Ativos:")
+    for v in sistema.voos.values():
+        print(f"- {v.numero_voo} ({v.origem} -> {v.destino})")
+    
+    num_voo = input(f"\n{Fore.YELLOW}Digite o Número do Voo: {Fore.WHITE}").upper().strip()
+    
+    # 3. Validar e mostrar passageiros
+    if num_voo not in sistema.voos:
+        print(f"\n{Fore.RED}❌ Voo {num_voo} não encontrado!")
     else:
-        print("Não encontrado.")
+        v = sistema.voos[num_voo]
+        print(f"\n{Fore.CYAN}Passageiros Confirmados no Voo {num_voo}:")
+        print(f"{Fore.WHITE}{'-' * 45}")
+
+        # O NOME CORRETO É: v.passageiros_no_voo
+        if not v.passageiros_no_voo:
+            print(f"{Fore.YELLOW}Este voo ainda não tem passageiros.")
+        else:
+            for p_id in v.passageiros_no_voo:
+                # O SISTEMA guarda o dicionário de passageiros
+                p = sistema.passageiros.get(p_id)
+                if p:
+                    print(f"{Fore.GREEN}✔ {Fore.WHITE}{p.nome:<25} | {Fore.YELLOW}{p_id}")
+                else:
+                    print(f"{Fore.RED}⚠ ID {p_id} não encontrado no registo central.")
+        
+        print(f"{Fore.WHITE}{'-' * 45}")
+
     aguardar_enter()

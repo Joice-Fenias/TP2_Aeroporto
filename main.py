@@ -1,60 +1,88 @@
 import time
 from src import consola as ui
-from src.base_dados import carregar_dados, guardar_dados  # Importa as tuas funções de JSON
+from src.base_dados import carregar_dados, guardar_dados
 
 def main():
-    # 1. CARREGAMENTO INICIAL (Persistence Check)
-    # Ao abrir, o sistema tenta ler o JSON e transformar em objetos reais
+    # 1. CARREGAMENTO INICIAL
     try:
         dados_base = carregar_dados()
         ui.sistema.carregar_de_dados(dados_base)
     except Exception as e:
-        print(f"{ui.Fore.RED},{e})⚠️ Aviso: Erro ao carregar base de dados. Iniciando vazio.")
+        print(f"{ui.Fore.RED}⚠️ Aviso: Erro ao carregar base de dados ({e}). Iniciando vazio.")
         time.sleep(1.5)
 
-    # 2. MAPA DE OPÇÕES (The "Dict" Logic)
-    # Aqui associamos a tecla do menu à função correspondente no consola.py
-    mapa_opcoes = {
-        "1": ui.adicionar_voo,
-        "2": ui.registar_passageiro,
-        "3": ui.vender_bilhete,
-        "4": ui.cancelar_bilhete,
-        "5": ui.listar_voos,
-        "6": ui.mostrar_historico,
-    }
-
-    # 3. LOOP PRINCIPAL (UI Flow)
     while True:
-        opcao = ui.exibir_menu_principal()
+        ui.limpar_ecra()
+        print(f"{ui.Fore.MAGENTA}{ui.Style.BRIGHT}=== SELECIONE O SEU PERFIL - AIR LESTI ===")
+        print(f"{ui.Fore.YELLOW}1.{ui.Fore.WHITE} Admin")
+        print(f"{ui.Fore.YELLOW}2.{ui.Fore.WHITE} Balconista")
+        print(f"{ui.Fore.YELLOW}3.{ui.Fore.WHITE} Cliente")
+        print(f"{ui.Fore.YELLOW}0.{ui.Fore.RED} Encerrar Sistema")
+        
+        perfil = input(f"\n{ui.Fore.CYAN}Escolha uma opção: ")
 
         # SAÍDA DO SISTEMA
-        if opcao == "0":
-            # Guardamos uma última vez por segurança antes de fechar
+        if perfil == "0":
             dados_finais = ui.sistema.preparar_dados_para_guardar()
             guardar_dados(dados_finais)
-            
-            print(f"\n{ui.Fore.CYAN}Sincronizando dados com a nuvem...")
-            time.sleep(0.8)
-            print(f"{ui.Fore.GREEN}✨ Sistema encerrado com sucesso. Até logo, Joice!")
+            print(f"\n{ui.Fore.GREEN}✨ Sistema encerrado com sucesso. Até logo!")
             break
 
-        # EXECUÇÃO DINÂMICA
-        # Procuramos a função no dicionário usando a chave 'opcao'
-        acao = mapa_opcoes.get(opcao)
+        # CONFIGURAÇÃO DE MAPAS POR PERFIL
+        mapa_opcoes = {}
+        titulo_menu = ""
+
+        if perfil == "1":  # ADMIN
+            titulo_menu = "PAINEL DE ADMINISTRADOR"
+            mapa_opcoes = {
+                "1": ui.adicionar_voo,
+                "2": ui.listar_voos,
+                "3": ui.mostrar_historico,
+                "4": ui.ver_passageiros_por_voo, # Nova função que vamos criar
+            }
+
+        elif perfil == "2":  # BALCONISTA
+            titulo_menu = "MODO BALCONISTA"
+            mapa_opcoes = {
+                "1": ui.adicionar_voo,
+                "2": ui.vender_bilhete,
+                "3": ui.cancelar_bilhete,
+                "4": ui.listar_voos,
+                "5": ui.ver_passageiros_por_voo,
+            }
+
+        elif perfil == "3":  # CLIENTE
+            titulo_menu = "ÁREA DO CLIENTE"
+            mapa_opcoes = {
+                "1": ui.listar_voos,
+                "2": ui.vender_bilhete, # Aqui ele compra
+                "3": ui.cancelar_bilhete,
+            }
         
-        if acao:
-            acao()  # Executa a função da consola
-            
-            # AUTO-SAVE: Após cada ação, guardamos no JSON para evitar perdas
-            try:
-                dados_atualizados = ui.sistema.preparar_dados_para_guardar()
-                guardar_dados(dados_atualizados)
-            except Exception as e:
-                print(f"{ui.Fore.RED}❌ Erro ao guardar dados: {e}")
         else:
-            # Caso o utilizador digite algo que não está no dicionário
-            print(f"\n{ui.Fore.RED}❌ Opção [{opcao}] inválida!")
+            print(f"{ui.Fore.RED}❌ Opção inválida!")
             time.sleep(1)
+            continue
+
+        # SUB-LOOP DO MENU DE PERFIL
+        while True:
+            opcao = ui.exibir_menu_personalizado(titulo_menu, mapa_opcoes)
+            
+            if opcao == "0": # Volta para a seleção de perfil
+                break
+            
+            acao = mapa_opcoes.get(opcao)
+            if acao:
+                acao()
+                # AUTO-SAVE após cada ação
+                try:
+                    dados_atualizados = ui.sistema.preparar_dados_para_guardar()
+                    guardar_dados(dados_atualizados)
+                except Exception as e:
+                    print(f"{ui.Fore.RED}❌ Erro ao guardar: {e}")
+            else:
+                print(f"{ui.Fore.RED}❌ Opção inválida!")
+                time.sleep(0.8)
 
 if __name__ == "__main__":
     main()
