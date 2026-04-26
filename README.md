@@ -86,6 +86,7 @@ python src/main.py
 ---
 ## Persistência de Dados
 Os dados são guardados automaticamente em database.json
+
 Estrutura base:
 ```
 {
