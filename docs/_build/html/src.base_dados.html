@@ -36,12 +36,16 @@
             
   <section id="module-src.base_dados">
 <span id="src-base-dados-module"></span><h1>src.base_dados module<a class="headerlink" href="#module-src.base_dados" title="Link to this heading">¶</a></h1>
-<p>Módulo de acesso à base de dados.
-Contém funções para carregar e guardar dados usando um ficheiro JSON.
+<section id="modulo-de-acesso-a-base-de-dados">
+<h2>Módulo de acesso à base de dados.<a class="headerlink" href="#modulo-de-acesso-a-base-de-dados" title="Link to this heading">¶</a></h2>
+<p>Contém funções para carregar e guardar dados usando um ficheiro JSON.
 A estrutura de dados é um dicionário com chaves «passageiros», «voos» e «bilhetes», cada uma contendo uma lista de objetos correspondentes.
 As funções de carregamento e guarda são projetadas para serem simples e robustas, lidando com erros comuns como ficheiros ausentes ou dados corrompidos.</p>
-<p>..warning::
-Este módulo é responsável apenas pelo acesso à base de dados. Evite colocar lógica de negócio aqui. Use as funções definidas em consola.py para manter a organização.</p>
+<div class="admonition warning">
+<p class="admonition-title">Aviso</p>
+<p>Este módulo é responsável apenas pelo acesso à base de dados. Evite colocar lógica de negócio aqui. Use as funções definidas em consola.py para manter a organização.</p>
+</div>
+</section>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.base_dados.carregar_dados">
 <span class="sig-prename descclassname"><span class="pre">src.base_dados.</span></span><span class="sig-name descname"><span class="pre">carregar_dados</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/base_dados.html#carregar_dados"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.base_dados.carregar_dados" title="Link to this definition">¶</a></dt>
@@ -90,6 +94,7 @@ Se o ficheiro não existir, cria um novo com a estrutura base.</p>
 <li class="toctree-l1 current"><a class="reference internal" href="src.html">src package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="src.html#submodules">Submodules</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">src.base_dados module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#modulo-de-acesso-a-base-de-dados">Módulo de acesso à base de dados.</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#src.base_dados.carregar_dados"><code class="docutils literal notranslate"><span class="pre">carregar_dados()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#src.base_dados.guardar_dados"><code class="docutils literal notranslate"><span class="pre">guardar_dados()</span></code></a></li>
 </ul>

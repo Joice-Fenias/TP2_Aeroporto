@@ -1,6 +1,22 @@
 """
-Módulo de Modelos - Sistema de Venda de Bilhetes de Avião
-Contém a lógica de negócio, validações de integridade e histórico de transações.
+Módulo de Definição de Modelos de Dados
+--------------------------------------
+
+Este módulo contém as classes fundamentais que representam as entidades 
+do sistema aeroportuário. Implementa a lógica de negócio e validações 
+essenciais para a integridade dos dados.
+
+.. note::
+    As classes aqui definidas são usadas em todo o sistema para garantir
+    consistência e facilitar a manutenção. Evite colocar lógica de interface
+    ou manipulação de dados diretamente aqui. Use as funções em consola.py
+    para interagir com os objetos definidos neste módulo.
+    
+.. warning::
+    Este módulo é o coração do sistema. Qualquer alteração aqui pode afetar
+    várias partes do programa. Teste cuidadosamente as mudanças e mantenha
+    a documentação atualizada para refletir as funcionalidades de cada classe.
+
 """
 
 from datetime import datetime
@@ -214,7 +230,7 @@ class Sistema:
         
         :param nome: str - Nome completo do passageiro
         :param passaporte: str - Número do passaporte (deve ser único)
-        
+    
         :raises ValueError: Se os dados forem inválidos.
         
         :return: Passageiro - O objeto Passageiro criado ou existente."""
@@ -248,6 +264,7 @@ class Sistema:
 
     def cancelar_bilhete(self, id_bilhete):
         """Cancela um bilhete específico.
+        
         :param id_bilhete: int - O identificador do bilhete a cancelar
         
         :raises ValueError: Se o bilhete não for encontrado ou já estiver cancelado.
@@ -278,6 +295,8 @@ class Sistema:
         :param dados_brutos: dict - O dicionário carregado do ficheiro JSON.
         
         :return: None
+        :retype: None
+        :raises ValueError: Se os dados forem inválidos ou inconsistentes.
         """
         # 1. Recriar Passageiros
         for p in dados_brutos.get("passageiros", []):

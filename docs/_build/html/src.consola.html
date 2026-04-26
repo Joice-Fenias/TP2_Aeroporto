@@ -36,16 +36,22 @@
             
   <section id="module-src.consola">
 <span id="src-consola-module"></span><h1>src.consola module<a class="headerlink" href="#module-src.consola" title="Link to this heading">¶</a></h1>
-<p>Módulo de interface de consola para o sistema de bilhetes do aeroporto.</p>
+<section id="modulo-de-interface-de-consola-para-o-sistema-de-bilhetes-do-aeroporto">
+<h2>Módulo de interface de consola para o sistema de bilhetes do aeroporto.<a class="headerlink" href="#modulo-de-interface-de-consola-para-o-sistema-de-bilhetes-do-aeroporto" title="Link to this heading">¶</a></h2>
 <p>Contém funções para exibir menus, coletar entradas e mostrar feedback ao utilizador.
 Cada função de ação (ex: adicionar_voo, vender_bilhete) é projetada para ser chamada a partir do mapa de opções no main.py.</p>
-<p>..note:
-As funções de ação recebem a instância do sistema como parâmetro para interagir com os dados.
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>As funções de ação recebem a instância do sistema como parâmetro para interagir com os dados.
 As funções de menu são genéricas e reutilizáveis, permitindo uma fácil expansão futura.
 As funções de ação são responsáveis por toda a lógica de interação com o sistema, incluindo validação de dados e tratamento de erros.
 As funções de menu apenas exibem opções e coletam a escolha do utilizador, delegando a lógica para as funções de ação.</p>
-<p>..warning::
-Este arquivo é o ponto de entrada do programa. Evite colocar lógica complexa aqui.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Aviso</p>
+<p>Este arquivo é o ponto de entrada do programa. Evite colocar lógica complexa aqui.</p>
+</div>
+</section>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.consola.adicionar_voo">
 <span class="sig-prename descclassname"><span class="pre">src.consola.</span></span><span class="sig-name descname"><span class="pre">adicionar_voo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/consola.html#adicionar_voo"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.consola.adicionar_voo" title="Link to this definition">¶</a></dt>
@@ -99,20 +105,18 @@ Este arquivo é o ponto de entrada do programa. Evite colocar lógica complexa a
 <dl class="field-list simple">
 <dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>titulo</strong> (<em>str</em>) – str - O título do menu a ser exibido.</p></li>
-<li><p><strong>mapa_opcoes</strong> (<em>dict</em>) – dict - Dicionário com as opções do menu e suas respectivas funções.</p></li>
+<li><p><strong>titulo</strong> – str - O título do menu a ser exibido.</p></li>
+<li><p><strong>mapa_opcoes</strong> – dict - Dicionário com as opções do menu e suas respectivas funções.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
 <dd class="field-even"><p>str</p>
 </dd>
 <dt class="field-odd">Retorno<span class="colon">:</span></dt>
-<dd class="field-odd"><p><p>A opção escolhida pelo utilizador.
-&gt;&gt;&gt; opcao = exibir_menu_personalizado(«PAINEL DE ADMINISTRADOR», {«1»: func1, «2»: func2})</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">opcao</span><span class="p">)</span>    <span class="s2">&quot;1&quot;</span>  <span class="c1"># Se o utilizador escolher a opção 1</span>
-</pre></div>
-</div>
-</p>
+<dd class="field-odd"><p>A opção escolhida pelo utilizador.</p>
+</dd>
+<dt class="field-even">Levanta<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Se a opção escolhida não for válida.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -269,6 +273,7 @@ Este arquivo é o ponto de entrada do programa. Evite colocar lógica complexa a
 <li class="toctree-l2 current"><a class="reference internal" href="src.html#submodules">Submodules</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="src.base_dados.html">src.base_dados module</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">src.consola module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#modulo-de-interface-de-consola-para-o-sistema-de-bilhetes-do-aeroporto">Módulo de interface de consola para o sistema de bilhetes do aeroporto.</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#src.consola.adicionar_voo"><code class="docutils literal notranslate"><span class="pre">adicionar_voo()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#src.consola.aguardar_enter"><code class="docutils literal notranslate"><span class="pre">aguardar_enter()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#src.consola.cancelar_bilhete"><code class="docutils literal notranslate"><span class="pre">cancelar_bilhete()</span></code></a></li>

@@ -32,19 +32,21 @@
           <div class="body" role="main">
             
   <h1>Código fonte de src.consola</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Módulo de interface de consola para o sistema de bilhetes do aeroporto.</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Módulo de interface de consola para o sistema de bilhetes do aeroporto.</span>
+<span class="sd">-----------------------------------------------</span>
 
 <span class="sd">Contém funções para exibir menus, coletar entradas e mostrar feedback ao utilizador.</span>
 <span class="sd">Cada função de ação (ex: adicionar_voo, vender_bilhete) é projetada para ser chamada a partir do mapa de opções no main.py.</span>
 
-<span class="sd">..note:</span>
-<span class="sd">As funções de ação recebem a instância do sistema como parâmetro para interagir com os dados.</span>
-<span class="sd">As funções de menu são genéricas e reutilizáveis, permitindo uma fácil expansão futura.</span>
-<span class="sd">As funções de ação são responsáveis por toda a lógica de interação com o sistema, incluindo validação de dados e tratamento de erros.</span>
-<span class="sd">As funções de menu apenas exibem opções e coletam a escolha do utilizador, delegando a lógica para as funções de ação.</span>
+<span class="sd">.. note::</span>
+<span class="sd">    As funções de ação recebem a instância do sistema como parâmetro para interagir com os dados.</span>
+<span class="sd">    As funções de menu são genéricas e reutilizáveis, permitindo uma fácil expansão futura.</span>
+<span class="sd">    As funções de ação são responsáveis por toda a lógica de interação com o sistema, incluindo validação de dados e tratamento de erros.</span>
+<span class="sd">    As funções de menu apenas exibem opções e coletam a escolha do utilizador, delegando a lógica para as funções de ação.</span>
 
-<span class="sd">..warning::</span>
-<span class="sd">Este arquivo é o ponto de entrada do programa. Evite colocar lógica complexa aqui.&quot;&quot;&quot;</span>
+<span class="sd">.. warning::</span>
+<span class="sd">    Este arquivo é o ponto de entrada do programa. Evite colocar lógica complexa aqui.&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">colorama</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fore</span><span class="p">,</span> <span class="n">Style</span><span class="p">,</span> <span class="n">init</span>
@@ -81,14 +83,13 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gera um menu visual baseado no perfil (Admin, Balconista ou Cliente).</span>
 <span class="sd">    </span>
 <span class="sd">    :param titulo: str - O título do menu a ser exibido.</span>
+<span class="sd">    </span>
 <span class="sd">    :param mapa_opcoes: dict - Dicionário com as opções do menu e suas respectivas funções.</span>
-<span class="sd">    :type titulo: str</span>
-<span class="sd">    :type mapa_opcoes: dict</span>
 <span class="sd">    </span>
 <span class="sd">    :rtype: str</span>
 <span class="sd">    :return: A opção escolhida pelo utilizador.</span>
-<span class="sd">      &gt;&gt;&gt; opcao = exibir_menu_personalizado(&quot;PAINEL DE ADMINISTRADOR&quot;, {&quot;1&quot;: func1, &quot;2&quot;: func2})</span>
-<span class="sd">        &gt;&gt;&gt; print(opcao)    &quot;1&quot;  # Se o utilizador escolher a opção 1   &quot;&quot;&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    :raises ValueError: Se a opção escolhida não for válida.&quot;&quot;&quot;</span>
     <span class="n">limpar_ecra</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">MAGENTA</span><span class="si">}{</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="si">}{</span><span class="s1">&#39;=&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">45</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="si">}{</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="si">}</span><span class="s2">    </span><span class="si">{</span><span class="n">titulo</span><span class="si">}</span><span class="s2"> - AIR LESTI&quot;</span><span class="p">)</span>

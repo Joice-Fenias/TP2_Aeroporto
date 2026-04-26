@@ -1,3 +1,16 @@
+"""
+Módulo de Gestão de Inventário (Tabela de Voos)
+----------------------------------------------
+
+Este módulo atua como o motor de armazenamento e consulta de voos. 
+Contém a estrutura de dados principal (Tabela) que permite a gestão 
+centralizada de todas as rotas operadas pelo sistema.
+
+.. note::
+    A Tabela é uma estrutura de dados fixa, pré-definida, que não é modificada durante a execução do programa.
+    Ela serve como referência para os voos disponíveis no aeroporto de Faro.    
+    Cada entrada na Tabela inclui informações como número do voo, destino, horário, tipo (nacional ou internacional), capacidade e taxa de embarque (para voos internacionais).
+"""
 # Tabela de Horários Fixa para o Aeroporto de Faro
 TABELA_HORARIOS = {
     "1":  {"voo": "TP1902", "destino": "Lisboa", "hora": "08:30", "tipo": "N", "cap": 120},
