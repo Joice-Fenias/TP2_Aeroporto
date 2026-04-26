@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+
+<html lang="pt" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>src.modelos &#8212; Documentação TP2 Aeroporto - Documentação </title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../_static/documentation_options.js?v=103ffe9a"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/translations.js?v=beaedd51"></script>
+    <link rel="index" title="Índice" href="../../genindex.html" />
+    <link rel="search" title="Pesquisar" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Código fonte de src.modelos</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Módulo de Modelos - Sistema de Venda de Bilhetes de Avião</span>
+<span class="sd">Contém a lógica de negócio, validações de integridade e histórico de transações.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+
+
+<div class="viewcode-block" id="Voo">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.Voo">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Voo</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gere a ocupação e os dados técnicos de um voo.</span>
+<span class="sd">    </span>
+<span class="sd">    Atributes:</span>
+<span class="sd">        :numero_voo: str - Identificador único do voo (ex: &quot;TP1902&quot;)</span>
+<span class="sd">        :origem: str - Local de partida</span>
+<span class="sd">        :destino: str - Local de chegada</span>
+<span class="sd">        :capacidade: int - Número total de assentos disponíveis</span>
+<span class="sd">        :lugares_ocupados: int - Contador de assentos já reservados</span>
+<span class="sd">        :passageiros_no_voo: set - Conjunto de passaportes dos passageiros atualmente reservados neste voo</span>
+<span class="sd">    </span>
+<span class="sd">    Methods:</span>
+<span class="sd">        :tem_vaga() -&gt; bool: Verifica se ainda existem assentos disponíveis.</span>
+<span class="sd">        :reservar_lugar(passaporte: str): Tenta reservar um lugar para o passageiro identificado pelo passaporte.</span>
+<span class="sd">        :libertar_lugar(passaporte: str): Remove o passaporte da lista de ocupação</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numero_voo</span><span class="p">,</span> <span class="n">origem</span><span class="p">,</span> <span class="n">destino</span><span class="p">,</span> <span class="n">capacidade</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numero_voo</span> <span class="o">=</span> <span class="n">numero_voo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">origem</span> <span class="o">=</span> <span class="n">origem</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">destino</span> <span class="o">=</span> <span class="n">destino</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">capacidade</span> <span class="o">=</span> <span class="n">capacidade</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lugares_ocupados</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># Conjunto para garantir acesso rápido e unicidade de passaportes no voo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">passageiros_no_voo</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Voo.tem_vaga">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.Voo.tem_vaga">[documentos]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tem_vaga</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Verifica se ainda existem assentos disponíveis.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lugares_ocupados</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">capacidade</span></div>
+
+
+<div class="viewcode-block" id="Voo.reservar_lugar">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.Voo.reservar_lugar">[documentos]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reservar_lugar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">passaporte</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tenta reservar um lugar para o passageiro identificado pelo passaporte.</span>
+<span class="sd">        </span>
+<span class="sd">        :param passaporte: str - O número do passaporte do passageiro a reservar.</span>
+<span class="sd">        </span>
+<span class="sd">        :raises ValueError: Se o passageiro já tiver reserva ou se o voo estiver lotado.</span>
+<span class="sd">        </span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">passaporte</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">passageiros_no_voo</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Passageiro com passaporte </span><span class="si">{</span><span class="n">passaporte</span><span class="si">}</span><span class="s2"> já possui reserva no voo </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">numero_voo</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">tem_vaga</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;O voo </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">numero_voo</span><span class="si">}</span><span class="s2"> está lotado.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lugares_ocupados</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">passageiros_no_voo</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">passaporte</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Voo.libertar_lugar">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.Voo.libertar_lugar">[documentos]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">libertar_lugar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">passaporte</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove o passaporte da lista de ocupação e decrementa o contador.</span>
+<span class="sd">        </span>
+<span class="sd">        :param passaporte: str - O número do passaporte do passageiro a remover.</span>
+<span class="sd">        </span>
+<span class="sd">        :raises ValueError: Se o passageiro não tiver reserva no voo.</span>
+<span class="sd">        </span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">passaporte</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">passageiros_no_voo</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">passageiros_no_voo</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">passaporte</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lugares_ocupados</span> <span class="o">-=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="Voo.to_dict">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.Voo.to_dict">[documentos]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Converte o objeto Voo em um dicionário para facilitar a serialização.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;numero_voo&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">numero_voo</span><span class="p">,</span>
+            <span class="s2">&quot;origem&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">origem</span><span class="p">,</span>
+            <span class="s2">&quot;destino&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">destino</span><span class="p">,</span>
+            <span class="s2">&quot;capacidade&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">capacidade</span><span class="p">,</span>
+            <span class="s2">&quot;lugares_ocupados&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">lugares_ocupados</span><span class="p">,</span>
+            <span class="s2">&quot;passageiros_no_voo&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">passageiros_no_voo</span><span class="p">),</span>
+        <span class="p">}</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;LOTADO&quot;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">tem_vaga</span><span class="p">()</span>
+            <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lugares_ocupados</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">capacidade</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;✈️ Voo </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">numero_voo</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">origem</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">destino</span><span class="si">}</span><span class="s2"> | Ocupação: </span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="Passageiro">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.Passageiro">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Passageiro</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Representa um utilizador único no sistema.</span>
+<span class="sd">    </span>
+<span class="sd">    Atributes:</span>
+<span class="sd">        :nome: str - Nome completo do passageiro</span>
+<span class="sd">        :passaporte: str - Número do passaporte (deve ser único)</span>
+<span class="sd">        </span>
+<span class="sd">    Methods:</span>
+<span class="sd">        :to_dict() -&gt; dict: Converte o objeto Passageiro em um dicionário para serialização.</span>
+<span class="sd">        :from_dict(dados: dict) -&gt; Passageiro: Método estático para criar um Passageiro a partir de um dicionário.</span>
+<span class="sd">        :   __str__() -&gt; str: Representação legível do passageiro.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nome</span><span class="p">,</span> <span class="n">passaporte</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">nome</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">passaporte</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Nome e Passaporte são campos obrigatórios.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">nome</span> <span class="o">=</span> <span class="n">nome</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">passaporte</span> <span class="o">=</span> <span class="n">passaporte</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Passageiro.to_dict">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.Passageiro.to_dict">[documentos]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;nome&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">nome</span><span class="p">,</span> <span class="s2">&quot;passaporte&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">passaporte</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="Passageiro.from_dict">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.Passageiro.from_dict">[documentos]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="n">dados</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Passageiro</span><span class="p">(</span><span class="n">dados</span><span class="p">[</span><span class="s2">&quot;nome&quot;</span><span class="p">],</span> <span class="n">dados</span><span class="p">[</span><span class="s2">&quot;passaporte&quot;</span><span class="p">])</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;👤 </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nome</span><span class="si">}</span><span class="s2"> (Passaporte: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">passaporte</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="Bilhete">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.Bilhete">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Bilhete</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gere a venda, cancelamento e histórico de um bilhete específico.</span>
+<span class="sd">    </span>
+<span class="sd">     Atributes:</span>
+<span class="sd">        :id_bilhete: int - Identificador único do bilhete</span>
+<span class="sd">        :passageiro: Passageiro - O passageiro associado a este bilhete</span>
+<span class="sd">        :voo: Voo - O voo associado a este bilhete</span>
+<span class="sd">        :preco: float - O preço pago pelo bilhete</span>
+<span class="sd">        :estado: str - &quot;Ativo&quot; ou &quot;Cancelado&quot;</span>
+<span class="sd">        :historico: list - Lista de eventos (compra, cancelamento) com timestamps</span>
+<span class="sd">        </span>
+<span class="sd">    Methods:</span>
+<span class="sd">        :comprar(): Realiza a reserva no voo e regista o evento de compra.</span>
+<span class="sd">        :cancelar(): Cancela o bilhete, liberta o lugar no voo e regista o evento de cancelamento.</span>
+<span class="sd">        :to_dict() -&gt; dict: Converte o objeto Bilhete em um dicionário para serialização.</span>
+<span class="sd">        :__str__() -&gt; str: Representação legível do bilhete.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_bilhete</span><span class="p">,</span> <span class="n">passageiro</span><span class="p">:</span> <span class="n">Passageiro</span><span class="p">,</span> <span class="n">voo</span><span class="p">:</span> <span class="n">Voo</span><span class="p">,</span> <span class="n">preco</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id_bilhete</span> <span class="o">=</span> <span class="n">id_bilhete</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">passageiro</span> <span class="o">=</span> <span class="n">passageiro</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">voo</span> <span class="o">=</span> <span class="n">voo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preco</span> <span class="o">=</span> <span class="n">preco</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">estado</span> <span class="o">=</span> <span class="s2">&quot;Ativo&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">historico</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Executa a compra automaticamente ao instanciar</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comprar</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Bilhete.adicionar_evento_historico">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.Bilhete.adicionar_evento_historico">[documentos]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">adicionar_evento_historico</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tipo</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Regista uma transação com timestamp.&quot;&quot;&quot;</span>
+        <span class="n">evento</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;data_hora&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y %H:%M:%S&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;tipo&quot;</span><span class="p">:</span> <span class="n">tipo</span><span class="p">,</span>
+            <span class="s2">&quot;detalhes&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Bilhete </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id_bilhete</span><span class="si">}</span><span class="s2"> para voo </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">voo</span><span class="o">.</span><span class="n">numero_voo</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">historico</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">evento</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Bilhete.comprar">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.Bilhete.comprar">[documentos]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">comprar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Efetua a reserva no voo e gera histórico de compra.&quot;&quot;&quot;</span>
+        <span class="c1"># A lógica de validação de duplicados e vagas está dentro do voo.reservar_lugar</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">voo</span><span class="o">.</span><span class="n">reservar_lugar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">passageiro</span><span class="o">.</span><span class="n">passaporte</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adicionar_evento_historico</span><span class="p">(</span><span class="s2">&quot;COMPRA&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Bilhete.cancelar">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.Bilhete.cancelar">[documentos]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cancelar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cancela o bilhete e liberta o lugar no voo.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">estado</span> <span class="o">==</span> <span class="s2">&quot;Cancelado&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Este bilhete já se encontra cancelado.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">estado</span> <span class="o">=</span> <span class="s2">&quot;Cancelado&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">voo</span><span class="o">.</span><span class="n">libertar_lugar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">passageiro</span><span class="o">.</span><span class="n">passaporte</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adicionar_evento_historico</span><span class="p">(</span><span class="s2">&quot;CANCELAMENTO&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Bilhete.to_dict">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.Bilhete.to_dict">[documentos]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;id_bilhete&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_bilhete</span><span class="p">,</span>
+            <span class="s2">&quot;passaporte_passageiro&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">passageiro</span><span class="o">.</span><span class="n">passaporte</span><span class="p">,</span>
+            <span class="s2">&quot;numero_voo&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">voo</span><span class="o">.</span><span class="n">numero_voo</span><span class="p">,</span>
+            <span class="s2">&quot;preco&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">preco</span><span class="p">,</span>
+            <span class="s2">&quot;estado&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">estado</span><span class="p">,</span>
+            <span class="s2">&quot;historico&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">historico</span><span class="p">,</span>
+        <span class="p">}</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;🎟️ Bilhete #</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id_bilhete</span><span class="si">}</span><span class="s2"> [</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">estado</span><span class="si">}</span><span class="s2">] | </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">passageiro</span><span class="o">.</span><span class="n">nome</span><span class="si">}</span><span class="s2"> -&gt; Voo </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">voo</span><span class="o">.</span><span class="n">numero_voo</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="Sistema">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.Sistema">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Sistema</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gestor central do sistema (Controlador).</span>
+<span class="sd">    </span>
+<span class="sd">     Atributes:</span>
+<span class="sd">        :voos: dict - Mapeamento de numero_voo para objetos Voo</span>
+<span class="sd">        :passageiros: dict - Mapeamento de passaporte para objetos Passageiro</span>
+<span class="sd">        :bilhetes: list - Lista de objetos Bilhete</span>
+<span class="sd">        </span>
+<span class="sd">    Methods:</span>
+<span class="sd">        :adicionar_voo(numero, origem, destino, capacidade): Adiciona um novo voo ao sistema.</span>
+<span class="sd">        :criar_passageiro(nome, passaporte): Cria um novo passageiro ou retorna existente.</span>
+<span class="sd">        :vender_bilhete(passaporte, num_voo, preco): Realiza a venda de um bilhete.</span>
+<span class="sd">        :cancelar_bilhete(id_bilhete): Cancela um bilhete específico.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">voos</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># numero_voo -&gt; objeto Voo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">passageiros</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># passaporte -&gt; objeto Passageiro</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bilhetes</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># lista de objetos Bilhete</span>
+
+<div class="viewcode-block" id="Sistema.adicionar_voo">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.Sistema.adicionar_voo">[documentos]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">adicionar_voo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numero</span><span class="p">,</span> <span class="n">origem</span><span class="p">,</span> <span class="n">destino</span><span class="p">,</span> <span class="n">capacidade</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">numero</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">voos</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Voo </span><span class="si">{</span><span class="n">numero</span><span class="si">}</span><span class="s2"> já existe.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">voos</span><span class="p">[</span><span class="n">numero</span><span class="p">]</span> <span class="o">=</span> <span class="n">Voo</span><span class="p">(</span><span class="n">numero</span><span class="p">,</span> <span class="n">origem</span><span class="p">,</span> <span class="n">destino</span><span class="p">,</span> <span class="n">capacidade</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Sistema.criar_passageiro">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.Sistema.criar_passageiro">[documentos]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">criar_passageiro</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nome</span><span class="p">,</span> <span class="n">passaporte</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cria um novo passageiro ou retorna existente.</span>
+<span class="sd">        </span>
+<span class="sd">        :param nome: str - Nome completo do passageiro</span>
+<span class="sd">        :param passaporte: str - Número do passaporte (deve ser único)</span>
+<span class="sd">        </span>
+<span class="sd">        :raises ValueError: Se os dados forem inválidos.</span>
+<span class="sd">        </span>
+<span class="sd">        :return: Passageiro - O objeto Passageiro criado ou existente.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">passaporte</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">passageiros</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">passageiros</span><span class="p">[</span><span class="n">passaporte</span><span class="p">]</span>  <span class="c1"># Retorna existente</span>
+        <span class="n">novo</span> <span class="o">=</span> <span class="n">Passageiro</span><span class="p">(</span><span class="n">nome</span><span class="p">,</span> <span class="n">passaporte</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">passageiros</span><span class="p">[</span><span class="n">passaporte</span><span class="p">]</span> <span class="o">=</span> <span class="n">novo</span>
+        <span class="k">return</span> <span class="n">novo</span></div>
+
+
+<div class="viewcode-block" id="Sistema.vender_bilhete">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.Sistema.vender_bilhete">[documentos]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">vender_bilhete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">passaporte</span><span class="p">,</span> <span class="n">num_voo</span><span class="p">,</span> <span class="n">preco</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Realiza a venda de um bilhete.</span>
+<span class="sd">        </span>
+<span class="sd">        :param passaporte: str - Número do passaporte do passageiro</span>
+<span class="sd">        :param num_voo: str - Número do voo</span>
+<span class="sd">        :param preco: float - Preço do bilhete</span>
+<span class="sd">        </span>
+<span class="sd">        :raises ValueError: Se os dados forem inválidos.</span>
+<span class="sd">        :return: Bilhete - O objeto Bilhete criado.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">num_voo</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">voos</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Voo não encontrado.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">passaporte</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">passageiros</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Passageiro não registado.&quot;</span><span class="p">)</span>
+
+        <span class="n">proximo_id</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bilhetes</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">novo_bilhete</span> <span class="o">=</span> <span class="n">Bilhete</span><span class="p">(</span>
+            <span class="n">proximo_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">passageiros</span><span class="p">[</span><span class="n">passaporte</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">voos</span><span class="p">[</span><span class="n">num_voo</span><span class="p">],</span> <span class="n">preco</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bilhetes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">novo_bilhete</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">novo_bilhete</span></div>
+
+
+<div class="viewcode-block" id="Sistema.cancelar_bilhete">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.Sistema.cancelar_bilhete">[documentos]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cancelar_bilhete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_bilhete</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cancela um bilhete específico.</span>
+<span class="sd">        :param id_bilhete: int - O identificador do bilhete a cancelar</span>
+<span class="sd">        </span>
+<span class="sd">        :raises ValueError: Se o bilhete não for encontrado ou já estiver cancelado.</span>
+<span class="sd">        </span>
+<span class="sd">        :return: None&quot;&quot;&quot;</span>
+        <span class="n">bilhete</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bilhetes</span> <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">id_bilhete</span> <span class="o">==</span> <span class="n">id_bilhete</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">bilhete</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Bilhete não encontrado.&quot;</span><span class="p">)</span>
+        <span class="n">bilhete</span><span class="o">.</span><span class="n">cancelar</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Sistema.obter_historico_geral">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.Sistema.obter_historico_geral">[documentos]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">obter_historico_geral</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">total_logs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bilhetes</span><span class="p">:</span>
+            <span class="n">total_logs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">historico</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">total_logs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;data_hora&quot;</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="Sistema.preparar_dados_para_guardar">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.Sistema.preparar_dados_para_guardar">[documentos]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">preparar_dados_para_guardar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Transforma todos os objetos em dicionários para o JSON.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;passageiros&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">passageiros</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span>
+            <span class="s2">&quot;voos&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">voos</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span>
+            <span class="s2">&quot;bilhetes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bilhetes</span><span class="p">],</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="Sistema.carregar_de_dados">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.Sistema.carregar_de_dados">[documentos]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">carregar_de_dados</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dados_brutos</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recria os objetos do sistema a partir dos dados carregados do JSON.</span>
+<span class="sd">        </span>
+<span class="sd">        :param dados_brutos: dict - O dicionário carregado do ficheiro JSON.</span>
+<span class="sd">        </span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 1. Recriar Passageiros</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">dados_brutos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;passageiros&quot;</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">criar_passageiro</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s2">&quot;nome&quot;</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;passaporte&quot;</span><span class="p">])</span>
+
+        <span class="c1"># 2. Recriar Voos (Diferenciando Nacional de Internacional)</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dados_brutos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;voos&quot;</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="c1"># Verifica se é um voo internacional pela presença da taxa</span>
+            <span class="k">if</span> <span class="s2">&quot;taxa_internacional&quot;</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+                <span class="n">novo_voo</span> <span class="o">=</span> <span class="n">VooInternacional</span><span class="p">(</span>
+                    <span class="n">v</span><span class="p">[</span><span class="s2">&quot;numero_voo&quot;</span><span class="p">],</span>
+                    <span class="n">v</span><span class="p">[</span><span class="s2">&quot;origem&quot;</span><span class="p">],</span>
+                    <span class="n">v</span><span class="p">[</span><span class="s2">&quot;destino&quot;</span><span class="p">],</span>
+                    <span class="n">v</span><span class="p">[</span><span class="s2">&quot;capacidade&quot;</span><span class="p">],</span>
+                    <span class="n">v</span><span class="p">[</span><span class="s2">&quot;taxa_internacional&quot;</span><span class="p">],</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">novo_voo</span> <span class="o">=</span> <span class="n">VooNacional</span><span class="p">(</span>
+                    <span class="n">v</span><span class="p">[</span><span class="s2">&quot;numero_voo&quot;</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;origem&quot;</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;destino&quot;</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;capacidade&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Restaurar o estado de ocupação guardado</span>
+            <span class="n">novo_voo</span><span class="o">.</span><span class="n">lugares_ocupados</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;lugares_ocupados&quot;</span><span class="p">]</span>
+            <span class="n">novo_voo</span><span class="o">.</span><span class="n">passageiros_no_voo</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;passageiros_no_voo&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">voos</span><span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;numero_voo&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">novo_voo</span>
+
+        <span class="c1"># 3. Recriar Bilhetes</span>
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">dados_brutos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bilhetes&quot;</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="c1"># Recupera os objetos de Passageiro e Voo já criados acima</span>
+            <span class="n">passageiro</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">passageiros</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="s2">&quot;passaporte_passageiro&quot;</span><span class="p">])</span>
+            <span class="n">voo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">voos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="s2">&quot;numero_voo&quot;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">passageiro</span> <span class="ow">and</span> <span class="n">voo</span><span class="p">:</span>
+                <span class="c1"># Usamos __new__ para evitar que o construtor __init__ do Bilhete</span>
+                <span class="c1"># tenta realizar uma &quot;nova compra&quot; e duplique a reserva no voo.</span>
+                <span class="n">novo_bilhete</span> <span class="o">=</span> <span class="n">Bilhete</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">Bilhete</span><span class="p">)</span>
+                <span class="n">novo_bilhete</span><span class="o">.</span><span class="n">id_bilhete</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="s2">&quot;id_bilhete&quot;</span><span class="p">]</span>
+                <span class="n">novo_bilhete</span><span class="o">.</span><span class="n">passageiro</span> <span class="o">=</span> <span class="n">passageiro</span>
+                <span class="n">novo_bilhete</span><span class="o">.</span><span class="n">voo</span> <span class="o">=</span> <span class="n">voo</span>
+                <span class="n">novo_bilhete</span><span class="o">.</span><span class="n">preco</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="s2">&quot;preco&quot;</span><span class="p">]</span>
+                <span class="n">novo_bilhete</span><span class="o">.</span><span class="n">estado</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="s2">&quot;estado&quot;</span><span class="p">]</span>
+                <span class="n">novo_bilhete</span><span class="o">.</span><span class="n">historico</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="s2">&quot;historico&quot;</span><span class="p">]</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">bilhetes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">novo_bilhete</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="VooNacional">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.VooNacional">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">VooNacional</span><span class="p">(</span><span class="n">Voo</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Especialização de Voo para voos nacionais, sem taxa adicional.</span>
+<span class="sd">    </span>
+<span class="sd">    Atributes:</span>
+<span class="sd">        :tipo: str - &quot;Nacional&quot;</span>
+<span class="sd">        </span>
+<span class="sd">    Methods:</span>
+<span class="sd">        :__str__() -&gt; str: Representação legível do voo nacional.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numero_voo</span><span class="p">,</span> <span class="n">origem</span><span class="p">,</span> <span class="n">destino</span><span class="p">,</span> <span class="n">capacidade</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">numero_voo</span><span class="p">,</span> <span class="n">origem</span><span class="p">,</span> <span class="n">destino</span><span class="p">,</span> <span class="n">capacidade</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tipo</span> <span class="o">=</span> <span class="s2">&quot;Nacional&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;✈️ [NACIONAL] </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">numero_voo</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">origem</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">destino</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="VooInternacional">
+<a class="viewcode-back" href="../../src.modelos.html#src.modelos.VooInternacional">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">VooInternacional</span><span class="p">(</span><span class="n">Voo</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Especialização de Voo para voos internacionais, com taxa adicional.</span>
+<span class="sd">    </span>
+<span class="sd">    Atributes:</span>
+<span class="sd">        :taxa_internacional: float - Valor adicional para voos internacionais</span>
+<span class="sd">        :tipo: str - &quot;Internacional&quot;</span>
+<span class="sd">        </span>
+<span class="sd">    Methods:</span>
+<span class="sd">        :__str__() -&gt; str: Representação legível do voo internacional, incluindo a taxa.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">numero_voo</span><span class="p">,</span> <span class="n">origem</span><span class="p">,</span> <span class="n">destino</span><span class="p">,</span> <span class="n">capacidade</span><span class="p">,</span> <span class="n">taxa_internacional</span><span class="o">=</span><span class="mf">50.0</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">numero_voo</span><span class="p">,</span> <span class="n">origem</span><span class="p">,</span> <span class="n">destino</span><span class="p">,</span> <span class="n">capacidade</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">taxa_internacional</span> <span class="o">=</span> <span class="n">taxa_internacional</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tipo</span> <span class="o">=</span> <span class="s2">&quot;Internacional&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;🌍 [INTERNACIONAL] </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">numero_voo</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">origem</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">destino</span><span class="si">}</span><span class="s2"> (Taxa: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">taxa_internacional</span><span class="si">}</span><span class="s2">€)&quot;</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">TP2 Aeroporto - Documentação</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Ir" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navegação</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../src.html">src package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Código do módulo</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Author.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

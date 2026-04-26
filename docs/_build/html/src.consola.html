@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+
+<html lang="pt" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>src.consola module &#8212; Documentação TP2 Aeroporto - Documentação </title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=103ffe9a"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/translations.js?v=beaedd51"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Pesquisar" href="search.html" />
+    <link rel="next" title="src.main module" href="src.main.html" />
+    <link rel="prev" title="src.base_dados module" href="src.base_dados.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-src.consola">
+<span id="src-consola-module"></span><h1>src.consola module<a class="headerlink" href="#module-src.consola" title="Link to this heading">¶</a></h1>
+<p>Módulo de interface de consola para o sistema de bilhetes do aeroporto.</p>
+<p>Contém funções para exibir menus, coletar entradas e mostrar feedback ao utilizador.
+Cada função de ação (ex: adicionar_voo, vender_bilhete) é projetada para ser chamada a partir do mapa de opções no main.py.</p>
+<p>..note:
+As funções de ação recebem a instância do sistema como parâmetro para interagir com os dados.
+As funções de menu são genéricas e reutilizáveis, permitindo uma fácil expansão futura.
+As funções de ação são responsáveis por toda a lógica de interação com o sistema, incluindo validação de dados e tratamento de erros.
+As funções de menu apenas exibem opções e coletam a escolha do utilizador, delegando a lógica para as funções de ação.</p>
+<p>..warning::
+Este arquivo é o ponto de entrada do programa. Evite colocar lógica complexa aqui.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.consola.adicionar_voo">
+<span class="sig-prename descclassname"><span class="pre">src.consola.</span></span><span class="sig-name descname"><span class="pre">adicionar_voo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/consola.html#adicionar_voo"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.consola.adicionar_voo" title="Link to this definition">¶</a></dt>
+<dd><p>Interface para abrir voos usando a tabela global.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sistema</strong> (<a class="reference internal" href="src.modelos.html#src.modelos.Sistema" title="src.modelos.Sistema"><em>Sistema</em></a>) – Sistema - A instância do sistema onde os voos serão adicionados.</p>
+</dd>
+<dt class="field-even">Levanta<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Se a escolha for inválida ou se o voo já existir.</p>
+</dd>
+<dt class="field-odd">Retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.consola.aguardar_enter">
+<span class="sig-prename descclassname"><span class="pre">src.consola.</span></span><span class="sig-name descname"><span class="pre">aguardar_enter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/consola.html#aguardar_enter"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.consola.aguardar_enter" title="Link to this definition">¶</a></dt>
+<dd><p>Pausa a execução para o utilizador ler o feedback.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.consola.cancelar_bilhete">
+<span class="sig-prename descclassname"><span class="pre">src.consola.</span></span><span class="sig-name descname"><span class="pre">cancelar_bilhete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/consola.html#cancelar_bilhete"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.consola.cancelar_bilhete" title="Link to this definition">¶</a></dt>
+<dd><p>Procura bilhetes por passaporte, lista as opções e pede confirmação.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sistema</strong> (<a class="reference internal" href="src.modelos.html#src.modelos.Sistema" title="src.modelos.Sistema"><em>Sistema</em></a>) – Sistema - A instância do sistema onde os bilhetes estão registados.</p>
+</dd>
+<dt class="field-even">Levanta<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Se não existirem bilhetes ativos ou se a escolha for inválida.</p>
+</dd>
+<dt class="field-odd">Retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.consola.exibir_menu_personalizado">
+<span class="sig-prename descclassname"><span class="pre">src.consola.</span></span><span class="sig-name descname"><span class="pre">exibir_menu_personalizado</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">titulo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapa_opcoes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/consola.html#exibir_menu_personalizado"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.consola.exibir_menu_personalizado" title="Link to this definition">¶</a></dt>
+<dd><p>Gera um menu visual baseado no perfil (Admin, Balconista ou Cliente).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>titulo</strong> (<em>str</em>) – str - O título do menu a ser exibido.</p></li>
+<li><p><strong>mapa_opcoes</strong> (<em>dict</em>) – dict - Dicionário com as opções do menu e suas respectivas funções.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+<dt class="field-odd">Retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p><p>A opção escolhida pelo utilizador.
+&gt;&gt;&gt; opcao = exibir_menu_personalizado(«PAINEL DE ADMINISTRADOR», {«1»: func1, «2»: func2})</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">opcao</span><span class="p">)</span>    <span class="s2">&quot;1&quot;</span>  <span class="c1"># Se o utilizador escolher a opção 1</span>
+</pre></div>
+</div>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.consola.exibir_menu_principal">
+<span class="sig-prename descclassname"><span class="pre">src.consola.</span></span><span class="sig-name descname"><span class="pre">exibir_menu_principal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/consola.html#exibir_menu_principal"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.consola.exibir_menu_principal" title="Link to this definition">¶</a></dt>
+<dd><p>Exibe o menu estilizado e retorna a opção.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str - A opção escolhida pelo utilizador.</p>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">opcao</span> <span class="o">=</span> <span class="n">exibir_menu_principal</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">opcao</span><span class="p">)</span>    <span class="s2">&quot;1&quot;</span>  <span class="c1"># Se o utilizador escolher a opção 1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.consola.limpar_ecra">
+<span class="sig-prename descclassname"><span class="pre">src.consola.</span></span><span class="sig-name descname"><span class="pre">limpar_ecra</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/consola.html#limpar_ecra"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.consola.limpar_ecra" title="Link to this definition">¶</a></dt>
+<dd><p>Limpa o terminal conforme o sistema operativo.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.consola.listar_voos">
+<span class="sig-prename descclassname"><span class="pre">src.consola.</span></span><span class="sig-name descname"><span class="pre">listar_voos</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/consola.html#listar_voos"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.consola.listar_voos" title="Link to this definition">¶</a></dt>
+<dd><p>Mostra o estado atual de todos os voos.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sistema</strong> (<a class="reference internal" href="src.modelos.html#src.modelos.Sistema" title="src.modelos.Sistema"><em>Sistema</em></a>) – Sistema - A instância do sistema onde os voos estão registados.</p>
+</dd>
+<dt class="field-even">Levanta<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Se não existirem voos registados.</p>
+</dd>
+<dt class="field-odd">Retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.consola.mostrar_historico">
+<span class="sig-prename descclassname"><span class="pre">src.consola.</span></span><span class="sig-name descname"><span class="pre">mostrar_historico</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/consola.html#mostrar_historico"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.consola.mostrar_historico" title="Link to this definition">¶</a></dt>
+<dd><p>Exibe os logs de todas as transações.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sistema</strong> (<a class="reference internal" href="src.modelos.html#src.modelos.Sistema" title="src.modelos.Sistema"><em>Sistema</em></a>) – Sistema - A instância do sistema onde os logs estão registados.</p>
+</dd>
+<dt class="field-even">Retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.consola.registar_passageiro">
+<span class="sig-prename descclassname"><span class="pre">src.consola.</span></span><span class="sig-name descname"><span class="pre">registar_passageiro</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/consola.html#registar_passageiro"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.consola.registar_passageiro" title="Link to this definition">¶</a></dt>
+<dd><p>Interface para criar um novo passageiro.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sistema</strong> (<a class="reference internal" href="src.modelos.html#src.modelos.Sistema" title="src.modelos.Sistema"><em>Sistema</em></a>) – Sistema - A instância do sistema onde os passageiros são registados.</p>
+</dd>
+<dt class="field-even">Levanta<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Se o passageiro já existir ou se os dados forem inválidos.</p>
+</dd>
+<dt class="field-odd">Retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.consola.vender_bilhete">
+<span class="sig-prename descclassname"><span class="pre">src.consola.</span></span><span class="sig-name descname"><span class="pre">vender_bilhete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/consola.html#vender_bilhete"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.consola.vender_bilhete" title="Link to this definition">¶</a></dt>
+<dd><p>Lógica: Escolhe voo primeiro, depois insere dados do passageiro.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sistema</strong> (<a class="reference internal" href="src.modelos.html#src.modelos.Sistema" title="src.modelos.Sistema"><em>Sistema</em></a>) – Sistema - A instância do sistema onde os voos e passageiros estão registados.</p>
+</dd>
+<dt class="field-even">Levanta<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Se o voo não existir, se o passageiro não existir ou se a compra falhar.</p>
+</dd>
+<dt class="field-odd">Retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.consola.ver_passageiros_por_voo">
+<span class="sig-prename descclassname"><span class="pre">src.consola.</span></span><span class="sig-name descname"><span class="pre">ver_passageiros_por_voo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/consola.html#ver_passageiros_por_voo"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.consola.ver_passageiros_por_voo" title="Link to this definition">¶</a></dt>
+<dd><p>Exibe quem está dentro de um voo específico (Admin/Balconista).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sistema</strong> (<a class="reference internal" href="src.modelos.html#src.modelos.Sistema" title="src.modelos.Sistema"><em>Sistema</em></a>) – Sistema - A instância do sistema onde os voos estão registados.</p>
+</dd>
+<dt class="field-even">Retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">TP2 Aeroporto - Documentação</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Ir" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navegação</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="src.html">src package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="src.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="src.base_dados.html">src.base_dados module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">src.consola module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#src.consola.adicionar_voo"><code class="docutils literal notranslate"><span class="pre">adicionar_voo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.consola.aguardar_enter"><code class="docutils literal notranslate"><span class="pre">aguardar_enter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.consola.cancelar_bilhete"><code class="docutils literal notranslate"><span class="pre">cancelar_bilhete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.consola.exibir_menu_personalizado"><code class="docutils literal notranslate"><span class="pre">exibir_menu_personalizado()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.consola.exibir_menu_principal"><code class="docutils literal notranslate"><span class="pre">exibir_menu_principal()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.consola.limpar_ecra"><code class="docutils literal notranslate"><span class="pre">limpar_ecra()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.consola.listar_voos"><code class="docutils literal notranslate"><span class="pre">listar_voos()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.consola.mostrar_historico"><code class="docutils literal notranslate"><span class="pre">mostrar_historico()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.consola.registar_passageiro"><code class="docutils literal notranslate"><span class="pre">registar_passageiro()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.consola.vender_bilhete"><code class="docutils literal notranslate"><span class="pre">vender_bilhete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.consola.ver_passageiros_por_voo"><code class="docutils literal notranslate"><span class="pre">ver_passageiros_por_voo()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="src.main.html">src.main module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="src.modelos.html">src.modelos module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="src.voos.html">src.voos module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.html#module-src">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="src.html">src package</a><ul>
+      <li>Previous: <a href="src.base_dados.html" title="capítulo anterior">src.base_dados module</a></li>
+      <li>Next: <a href="src.main.html" title="próximo capítulo">src.main module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Author.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/src.consola.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

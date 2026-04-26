@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+
+<html lang="pt" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>src.modelos module &#8212; Documentação TP2 Aeroporto - Documentação </title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=103ffe9a"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/translations.js?v=beaedd51"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Pesquisar" href="search.html" />
+    <link rel="next" title="src.voos module" href="src.voos.html" />
+    <link rel="prev" title="src.main module" href="src.main.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-src.modelos">
+<span id="src-modelos-module"></span><h1>src.modelos module<a class="headerlink" href="#module-src.modelos" title="Link to this heading">¶</a></h1>
+<p>Módulo de Modelos - Sistema de Venda de Bilhetes de Avião
+Contém a lógica de negócio, validações de integridade e histórico de transações.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.modelos.Bilhete">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">src.modelos.</span></span><span class="sig-name descname"><span class="pre">Bilhete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_bilhete</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passageiro</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#src.modelos.Passageiro" title="src.modelos.Passageiro"><span class="pre">Passageiro</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">voo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#src.modelos.Voo" title="src.modelos.Voo"><span class="pre">Voo</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">preco</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#Bilhete"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Bilhete" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Gere a venda, cancelamento e histórico de um bilhete específico.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Atributes:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">id_bilhete<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int - Identificador único do bilhete</p>
+</dd>
+<dt class="field-even">passageiro<span class="colon">:</span></dt>
+<dd class="field-even"><p>Passageiro - O passageiro associado a este bilhete</p>
+</dd>
+<dt class="field-odd">voo<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Voo - O voo associado a este bilhete</p>
+</dd>
+<dt class="field-even">preco<span class="colon">:</span></dt>
+<dd class="field-even"><p>float - O preço pago pelo bilhete</p>
+</dd>
+<dt class="field-odd">estado<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str - «Ativo» ou «Cancelado»</p>
+</dd>
+<dt class="field-even">historico<span class="colon">:</span></dt>
+<dd class="field-even"><p>list - Lista de eventos (compra, cancelamento) com timestamps</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modelos.Bilhete.adicionar_evento_historico">
+<span class="sig-name descname"><span class="pre">adicionar_evento_historico</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tipo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#Bilhete.adicionar_evento_historico"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Bilhete.adicionar_evento_historico" title="Link to this definition">¶</a></dt>
+<dd><p>Regista uma transação com timestamp.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modelos.Bilhete.cancelar">
+<span class="sig-name descname"><span class="pre">cancelar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#Bilhete.cancelar"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Bilhete.cancelar" title="Link to this definition">¶</a></dt>
+<dd><p>Cancela o bilhete e liberta o lugar no voo.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modelos.Bilhete.comprar">
+<span class="sig-name descname"><span class="pre">comprar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#Bilhete.comprar"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Bilhete.comprar" title="Link to this definition">¶</a></dt>
+<dd><p>Efetua a reserva no voo e gera histórico de compra.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modelos.Bilhete.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#Bilhete.to_dict"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Bilhete.to_dict" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.modelos.Passageiro">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">src.modelos.</span></span><span class="sig-name descname"><span class="pre">Passageiro</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nome</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passaporte</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#Passageiro"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Passageiro" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Representa um utilizador único no sistema.</p>
+<dl class="simple">
+<dt>Atributes:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">nome<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str - Nome completo do passageiro</p>
+</dd>
+<dt class="field-even">passaporte<span class="colon">:</span></dt>
+<dd class="field-even"><p>str - Número do passaporte (deve ser único)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modelos.Passageiro.from_dict">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dados</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#Passageiro.from_dict"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Passageiro.from_dict" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modelos.Passageiro.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#Passageiro.to_dict"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Passageiro.to_dict" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.modelos.Sistema">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">src.modelos.</span></span><span class="sig-name descname"><span class="pre">Sistema</span></span><a class="reference internal" href="_modules/src/modelos.html#Sistema"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Sistema" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Gestor central do sistema (Controlador).</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Atributes:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">voos<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict - Mapeamento de numero_voo para objetos Voo</p>
+</dd>
+<dt class="field-even">passageiros<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict - Mapeamento de passaporte para objetos Passageiro</p>
+</dd>
+<dt class="field-odd">bilhetes<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list - Lista de objetos Bilhete</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modelos.Sistema.adicionar_voo">
+<span class="sig-name descname"><span class="pre">adicionar_voo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numero</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destino</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capacidade</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#Sistema.adicionar_voo"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Sistema.adicionar_voo" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modelos.Sistema.cancelar_bilhete">
+<span class="sig-name descname"><span class="pre">cancelar_bilhete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_bilhete</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#Sistema.cancelar_bilhete"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Sistema.cancelar_bilhete" title="Link to this definition">¶</a></dt>
+<dd><p>Cancela um bilhete específico.
+:param id_bilhete: int - O identificador do bilhete a cancelar</p>
+<dl class="field-list simple">
+<dt class="field-odd">Levanta<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – Se o bilhete não for encontrado ou já estiver cancelado.</p>
+</dd>
+<dt class="field-even">Retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modelos.Sistema.carregar_de_dados">
+<span class="sig-name descname"><span class="pre">carregar_de_dados</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dados_brutos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#Sistema.carregar_de_dados"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Sistema.carregar_de_dados" title="Link to this definition">¶</a></dt>
+<dd><p>Recria os objetos do sistema a partir dos dados carregados do JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dados_brutos</strong> – dict - O dicionário carregado do ficheiro JSON.</p>
+</dd>
+<dt class="field-even">Retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modelos.Sistema.criar_passageiro">
+<span class="sig-name descname"><span class="pre">criar_passageiro</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nome</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passaporte</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#Sistema.criar_passageiro"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Sistema.criar_passageiro" title="Link to this definition">¶</a></dt>
+<dd><p>Cria um novo passageiro ou retorna existente.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nome</strong> – str - Nome completo do passageiro</p></li>
+<li><p><strong>passaporte</strong> – str - Número do passaporte (deve ser único)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Levanta<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Se os dados forem inválidos.</p>
+</dd>
+<dt class="field-odd">Retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Passageiro - O objeto Passageiro criado ou existente.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modelos.Sistema.obter_historico_geral">
+<span class="sig-name descname"><span class="pre">obter_historico_geral</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#Sistema.obter_historico_geral"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Sistema.obter_historico_geral" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modelos.Sistema.preparar_dados_para_guardar">
+<span class="sig-name descname"><span class="pre">preparar_dados_para_guardar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#Sistema.preparar_dados_para_guardar"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Sistema.preparar_dados_para_guardar" title="Link to this definition">¶</a></dt>
+<dd><p>Transforma todos os objetos em dicionários para o JSON.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modelos.Sistema.vender_bilhete">
+<span class="sig-name descname"><span class="pre">vender_bilhete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">passaporte</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_voo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preco</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#Sistema.vender_bilhete"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Sistema.vender_bilhete" title="Link to this definition">¶</a></dt>
+<dd><p>Realiza a venda de um bilhete.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>passaporte</strong> – str - Número do passaporte do passageiro</p></li>
+<li><p><strong>num_voo</strong> – str - Número do voo</p></li>
+<li><p><strong>preco</strong> – float - Preço do bilhete</p></li>
+</ul>
+</dd>
+<dt class="field-even">Levanta<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Se os dados forem inválidos.</p>
+</dd>
+<dt class="field-odd">Retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Bilhete - O objeto Bilhete criado.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.modelos.Voo">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">src.modelos.</span></span><span class="sig-name descname"><span class="pre">Voo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numero_voo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destino</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capacidade</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#Voo"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Voo" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Gere a ocupação e os dados técnicos de um voo.</p>
+<dl class="simple">
+<dt>Atributes:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">numero_voo<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str - Identificador único do voo (ex: «TP1902»)</p>
+</dd>
+<dt class="field-even">origem<span class="colon">:</span></dt>
+<dd class="field-even"><p>str - Local de partida</p>
+</dd>
+<dt class="field-odd">destino<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str - Local de chegada</p>
+</dd>
+<dt class="field-even">capacidade<span class="colon">:</span></dt>
+<dd class="field-even"><p>int - Número total de assentos disponíveis</p>
+</dd>
+<dt class="field-odd">lugares_ocupados<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int - Contador de assentos já reservados</p>
+</dd>
+<dt class="field-even">passageiros_no_voo<span class="colon">:</span></dt>
+<dd class="field-even"><p>set - Conjunto de passaportes dos passageiros atualmente reservados neste voo</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modelos.Voo.libertar_lugar">
+<span class="sig-name descname"><span class="pre">libertar_lugar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">passaporte</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#Voo.libertar_lugar"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Voo.libertar_lugar" title="Link to this definition">¶</a></dt>
+<dd><p>Remove o passaporte da lista de ocupação e decrementa o contador.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>passaporte</strong> – str - O número do passaporte do passageiro a remover.</p>
+</dd>
+<dt class="field-even">Levanta<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Se o passageiro não tiver reserva no voo.</p>
+</dd>
+<dt class="field-odd">Retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modelos.Voo.reservar_lugar">
+<span class="sig-name descname"><span class="pre">reservar_lugar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">passaporte</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#Voo.reservar_lugar"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Voo.reservar_lugar" title="Link to this definition">¶</a></dt>
+<dd><p>Tenta reservar um lugar para o passageiro identificado pelo passaporte.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>passaporte</strong> – str - O número do passaporte do passageiro a reservar.</p>
+</dd>
+<dt class="field-even">Levanta<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Se o passageiro já tiver reserva ou se o voo estiver lotado.</p>
+</dd>
+<dt class="field-odd">Retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modelos.Voo.tem_vaga">
+<span class="sig-name descname"><span class="pre">tem_vaga</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/src/modelos.html#Voo.tem_vaga"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Voo.tem_vaga" title="Link to this definition">¶</a></dt>
+<dd><p>Verifica se ainda existem assentos disponíveis.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modelos.Voo.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#Voo.to_dict"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Voo.to_dict" title="Link to this definition">¶</a></dt>
+<dd><p>Converte o objeto Voo em um dicionário para facilitar a serialização.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.modelos.VooInternacional">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">src.modelos.</span></span><span class="sig-name descname"><span class="pre">VooInternacional</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numero_voo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destino</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capacidade</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">taxa_internacional</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#VooInternacional"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.VooInternacional" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.modelos.Voo" title="src.modelos.Voo"><code class="xref py py-class docutils literal notranslate"><span class="pre">Voo</span></code></a></p>
+<p>Especialização de Voo para voos internacionais, com taxa adicional.</p>
+<dl class="simple">
+<dt>Atributes:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">taxa_internacional<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float - Valor adicional para voos internacionais</p>
+</dd>
+<dt class="field-even">tipo<span class="colon">:</span></dt>
+<dd class="field-even"><p>str - «Internacional»</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.modelos.VooNacional">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">src.modelos.</span></span><span class="sig-name descname"><span class="pre">VooNacional</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numero_voo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destino</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capacidade</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#VooNacional"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.VooNacional" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.modelos.Voo" title="src.modelos.Voo"><code class="xref py py-class docutils literal notranslate"><span class="pre">Voo</span></code></a></p>
+<p>Especialização de Voo para voos nacionais, sem taxa adicional.</p>
+<dl class="simple">
+<dt>Atributes:</dt><dd><dl class="field-list simple">
+<dt class="field-odd">tipo<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str - «Nacional»</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">TP2 Aeroporto - Documentação</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Ir" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navegação</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="src.html">src package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="src.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="src.base_dados.html">src.base_dados module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="src.consola.html">src.consola module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="src.main.html">src.main module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">src.modelos module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#src.modelos.Bilhete"><code class="docutils literal notranslate"><span class="pre">Bilhete</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.modelos.Passageiro"><code class="docutils literal notranslate"><span class="pre">Passageiro</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.modelos.Sistema"><code class="docutils literal notranslate"><span class="pre">Sistema</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.modelos.Voo"><code class="docutils literal notranslate"><span class="pre">Voo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.modelos.VooInternacional"><code class="docutils literal notranslate"><span class="pre">VooInternacional</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.modelos.VooNacional"><code class="docutils literal notranslate"><span class="pre">VooNacional</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="src.voos.html">src.voos module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.html#module-src">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="src.html">src package</a><ul>
+      <li>Previous: <a href="src.main.html" title="capítulo anterior">src.main module</a></li>
+      <li>Next: <a href="src.voos.html" title="próximo capítulo">src.voos module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Author.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/src.modelos.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
