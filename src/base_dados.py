@@ -1,10 +1,11 @@
 """Módulo de acesso à base de dados.
+----------------------------------------------
 Contém funções para carregar e guardar dados usando um ficheiro JSON.
 A estrutura de dados é um dicionário com chaves "passageiros", "voos" e "bilhetes", cada uma contendo uma lista de objetos correspondentes.
 As funções de carregamento e guarda são projetadas para serem simples e robustas, lidando com erros comuns como ficheiros ausentes ou dados corrompidos.
 
-..warning::
-Este módulo é responsável apenas pelo acesso à base de dados. Evite colocar lógica de negócio aqui. Use as funções definidas em consola.py para manter a organização."""
+.. warning::
+    Este módulo é responsável apenas pelo acesso à base de dados. Evite colocar lógica de negócio aqui. Use as funções definidas em consola.py para manter a organização."""
 
 import json
 

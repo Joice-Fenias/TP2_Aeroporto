@@ -36,8 +36,25 @@
             
   <section id="module-src.modelos">
 <span id="src-modelos-module"></span><h1>src.modelos module<a class="headerlink" href="#module-src.modelos" title="Link to this heading">¶</a></h1>
-<p>Módulo de Modelos - Sistema de Venda de Bilhetes de Avião
-Contém a lógica de negócio, validações de integridade e histórico de transações.</p>
+<section id="modulo-de-definicao-de-modelos-de-dados">
+<h2>Módulo de Definição de Modelos de Dados<a class="headerlink" href="#modulo-de-definicao-de-modelos-de-dados" title="Link to this heading">¶</a></h2>
+<p>Este módulo contém as classes fundamentais que representam as entidades
+do sistema aeroportuário. Implementa a lógica de negócio e validações
+essenciais para a integridade dos dados.</p>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>As classes aqui definidas são usadas em todo o sistema para garantir
+consistência e facilitar a manutenção. Evite colocar lógica de interface
+ou manipulação de dados diretamente aqui. Use as funções em consola.py
+para interagir com os objetos definidos neste módulo.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Aviso</p>
+<p>Este módulo é o coração do sistema. Qualquer alteração aqui pode afetar
+várias partes do programa. Teste cuidadosamente as mudanças e mantenha
+a documentação atualizada para refletir as funcionalidades de cada classe.</p>
+</div>
+</section>
 <dl class="py class">
 <dt class="sig sig-object py" id="src.modelos.Bilhete">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">src.modelos.</span></span><span class="sig-name descname"><span class="pre">Bilhete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_bilhete</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passageiro</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#src.modelos.Passageiro" title="src.modelos.Passageiro"><span class="pre">Passageiro</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">voo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#src.modelos.Voo" title="src.modelos.Voo"><span class="pre">Voo</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">preco</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#Bilhete"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Bilhete" title="Link to this definition">¶</a></dt>
@@ -150,14 +167,16 @@ Contém a lógica de negócio, validações de integridade e histórico de trans
 <dl class="py method">
 <dt class="sig sig-object py" id="src.modelos.Sistema.cancelar_bilhete">
 <span class="sig-name descname"><span class="pre">cancelar_bilhete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_bilhete</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/modelos.html#Sistema.cancelar_bilhete"><span class="viewcode-link"><span class="pre">[código</span> <span class="pre">fonte]</span></span></a><a class="headerlink" href="#src.modelos.Sistema.cancelar_bilhete" title="Link to this definition">¶</a></dt>
-<dd><p>Cancela um bilhete específico.
-:param id_bilhete: int - O identificador do bilhete a cancelar</p>
+<dd><p>Cancela um bilhete específico.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Levanta<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ValueError</strong> – Se o bilhete não for encontrado ou já estiver cancelado.</p>
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>id_bilhete</strong> – int - O identificador do bilhete a cancelar</p>
 </dd>
-<dt class="field-even">Retorno<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dt class="field-even">Levanta<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Se o bilhete não for encontrado ou já estiver cancelado.</p>
+</dd>
+<dt class="field-odd">Retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -172,6 +191,12 @@ Contém a lógica de negócio, validações de integridade e histórico de trans
 </dd>
 <dt class="field-even">Retorno<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Retype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Levanta<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Se os dados forem inválidos ou inconsistentes.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -375,6 +400,7 @@ Contém a lógica de negócio, validações de integridade e histórico de trans
 <li class="toctree-l3"><a class="reference internal" href="src.consola.html">src.consola module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="src.main.html">src.main module</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">src.modelos module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#modulo-de-definicao-de-modelos-de-dados">Módulo de Definição de Modelos de Dados</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#src.modelos.Bilhete"><code class="docutils literal notranslate"><span class="pre">Bilhete</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#src.modelos.Passageiro"><code class="docutils literal notranslate"><span class="pre">Passageiro</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#src.modelos.Sistema"><code class="docutils literal notranslate"><span class="pre">Sistema</span></code></a></li>

@@ -1,16 +1,18 @@
-"""Módulo de interface de consola para o sistema de bilhetes do aeroporto.
+"""
+Módulo de interface de consola para o sistema de bilhetes do aeroporto.
+-----------------------------------------------
 
 Contém funções para exibir menus, coletar entradas e mostrar feedback ao utilizador.
 Cada função de ação (ex: adicionar_voo, vender_bilhete) é projetada para ser chamada a partir do mapa de opções no main.py.
 
-..note:
-As funções de ação recebem a instância do sistema como parâmetro para interagir com os dados.
-As funções de menu são genéricas e reutilizáveis, permitindo uma fácil expansão futura.
-As funções de ação são responsáveis por toda a lógica de interação com o sistema, incluindo validação de dados e tratamento de erros.
-As funções de menu apenas exibem opções e coletam a escolha do utilizador, delegando a lógica para as funções de ação.
+.. note::
+    As funções de ação recebem a instância do sistema como parâmetro para interagir com os dados.
+    As funções de menu são genéricas e reutilizáveis, permitindo uma fácil expansão futura.
+    As funções de ação são responsáveis por toda a lógica de interação com o sistema, incluindo validação de dados e tratamento de erros.
+    As funções de menu apenas exibem opções e coletam a escolha do utilizador, delegando a lógica para as funções de ação.
 
-..warning::
-Este arquivo é o ponto de entrada do programa. Evite colocar lógica complexa aqui."""
+.. warning::
+    Este arquivo é o ponto de entrada do programa. Evite colocar lógica complexa aqui."""
 
 import os
 from colorama import Fore, Style, init
@@ -39,14 +41,13 @@ def exibir_menu_personalizado(titulo, mapa_opcoes):
     """Gera um menu visual baseado no perfil (Admin, Balconista ou Cliente).
     
     :param titulo: str - O título do menu a ser exibido.
+    
     :param mapa_opcoes: dict - Dicionário com as opções do menu e suas respectivas funções.
-    :type titulo: str
-    :type mapa_opcoes: dict
     
     :rtype: str
     :return: A opção escolhida pelo utilizador.
-      >>> opcao = exibir_menu_personalizado("PAINEL DE ADMINISTRADOR", {"1": func1, "2": func2})
-        >>> print(opcao)    "1"  # Se o utilizador escolher a opção 1   """
+    
+    :raises ValueError: Se a opção escolhida não for válida."""
     limpar_ecra()
     print(f"{Fore.MAGENTA}{Style.BRIGHT}{'=' * 45}")
     print(f"{Fore.CYAN}{Style.BRIGHT}    {titulo} - AIR LESTI")
