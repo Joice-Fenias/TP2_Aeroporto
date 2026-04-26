@@ -87,11 +87,13 @@ python src/main.py
 ## Persistência de Dados
 Os dados são guardados automaticamente em database.json
 Estrutura base:
+```
 {
   "passageiros": [],
   "voos": [],
   "bilhetes": []
 }
+```
 Os dados são carregados automaticamente ao iniciar o programa
 
 ---
