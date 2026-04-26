@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+
+<html lang="pt" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>src.base_dados &#8212; Documentação TP2 Aeroporto - Documentação </title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../_static/documentation_options.js?v=103ffe9a"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/translations.js?v=beaedd51"></script>
+    <link rel="index" title="Índice" href="../../genindex.html" />
+    <link rel="search" title="Pesquisar" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Código fonte de src.base_dados</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Módulo de acesso à base de dados.</span>
+<span class="sd">Contém funções para carregar e guardar dados usando um ficheiro JSON.</span>
+<span class="sd">A estrutura de dados é um dicionário com chaves &quot;passageiros&quot;, &quot;voos&quot; e &quot;bilhetes&quot;, cada uma contendo uma lista de objetos correspondentes.</span>
+<span class="sd">As funções de carregamento e guarda são projetadas para serem simples e robustas, lidando com erros comuns como ficheiros ausentes ou dados corrompidos.</span>
+
+<span class="sd">..warning::</span>
+<span class="sd">Este módulo é responsável apenas pelo acesso à base de dados. Evite colocar lógica de negócio aqui. Use as funções definidas em consola.py para manter a organização.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="n">arquivo_db</span> <span class="o">=</span> <span class="s2">&quot;database.json&quot;</span>
+
+<span class="c1"># Estrutura base para armazenar os dados</span>
+<span class="n">dados</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;passageiros&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;voos&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;bilhetes&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+
+
+<div class="viewcode-block" id="carregar_dados">
+<a class="viewcode-back" href="../../src.base_dados.html#src.base_dados.carregar_dados">[documentos]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">carregar_dados</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Carrega os dados do ficheiro JSON.</span>
+<span class="sd">    Se o ficheiro não existir, cria um novo com a estrutura base.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">arquivo_db</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ficheiro</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">ficheiro</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">arquivo_db</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ficheiro</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dados</span><span class="p">,</span> <span class="n">ficheiro</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Base de dados criada&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dados</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+
+
+
+<span class="c1"># Função para guardar dados no ficheiro JSON</span>
+<div class="viewcode-block" id="guardar_dados">
+<a class="viewcode-back" href="../../src.base_dados.html#src.base_dados.guardar_dados">[documentos]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">guardar_dados</span><span class="p">(</span><span class="n">dados</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Guarda os dados atualizados no ficheiro JSON.</span>
+<span class="sd">    :param dados: Dicionário contendo as listas de passageiros, voos e bilhetes.</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;database.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ficheiro</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dados</span><span class="p">,</span> <span class="n">ficheiro</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">TP2 Aeroporto - Documentação</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Ir" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navegação</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../src.html">src package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Código do módulo</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Author.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+
+<html lang="pt" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>src.consola &#8212; Documentação TP2 Aeroporto - Documentação </title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../_static/documentation_options.js?v=103ffe9a"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/translations.js?v=beaedd51"></script>
+    <link rel="index" title="Índice" href="../../genindex.html" />
+    <link rel="search" title="Pesquisar" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Código fonte de src.consola</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Módulo de interface de consola para o sistema de bilhetes do aeroporto.</span>
+
+<span class="sd">Contém funções para exibir menus, coletar entradas e mostrar feedback ao utilizador.</span>
+<span class="sd">Cada função de ação (ex: adicionar_voo, vender_bilhete) é projetada para ser chamada a partir do mapa de opções no main.py.</span>
+
+<span class="sd">..note:</span>
+<span class="sd">As funções de ação recebem a instância do sistema como parâmetro para interagir com os dados.</span>
+<span class="sd">As funções de menu são genéricas e reutilizáveis, permitindo uma fácil expansão futura.</span>
+<span class="sd">As funções de ação são responsáveis por toda a lógica de interação com o sistema, incluindo validação de dados e tratamento de erros.</span>
+<span class="sd">As funções de menu apenas exibem opções e coletam a escolha do utilizador, delegando a lógica para as funções de ação.</span>
+
+<span class="sd">..warning::</span>
+<span class="sd">Este arquivo é o ponto de entrada do programa. Evite colocar lógica complexa aqui.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">colorama</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fore</span><span class="p">,</span> <span class="n">Style</span><span class="p">,</span> <span class="n">init</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">src.modelos</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sistema</span><span class="p">,</span> <span class="n">VooNacional</span><span class="p">,</span> <span class="n">VooInternacional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">src.voos</span><span class="w"> </span><span class="kn">import</span> <span class="n">TABELA_HORARIOS</span>
+
+<span class="c1"># Inicializa as cores</span>
+<span class="n">init</span><span class="p">(</span><span class="n">autoreset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Instância global do sistema para ser usada pelas funções de ação</span>
+<span class="n">sistema</span> <span class="o">=</span> <span class="n">Sistema</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="limpar_ecra">
+<a class="viewcode-back" href="../../src.consola.html#src.consola.limpar_ecra">[documentos]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">limpar_ecra</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Limpa o terminal conforme o sistema operativo.&quot;&quot;&quot;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;cls&quot;</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;nt&quot;</span> <span class="k">else</span> <span class="s2">&quot;clear&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="aguardar_enter">
+<a class="viewcode-back" href="../../src.consola.html#src.consola.aguardar_enter">[documentos]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">aguardar_enter</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pausa a execução para o utilizador ler o feedback.&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="si">}</span><span class="s2">Pressione Enter para voltar ao menu...&quot;</span><span class="p">)</span>
+    <span class="nb">input</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="exibir_menu_personalizado">
+<a class="viewcode-back" href="../../src.consola.html#src.consola.exibir_menu_personalizado">[documentos]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">exibir_menu_personalizado</span><span class="p">(</span><span class="n">titulo</span><span class="p">,</span> <span class="n">mapa_opcoes</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gera um menu visual baseado no perfil (Admin, Balconista ou Cliente).</span>
+<span class="sd">    </span>
+<span class="sd">    :param titulo: str - O título do menu a ser exibido.</span>
+<span class="sd">    :param mapa_opcoes: dict - Dicionário com as opções do menu e suas respectivas funções.</span>
+<span class="sd">    :type titulo: str</span>
+<span class="sd">    :type mapa_opcoes: dict</span>
+<span class="sd">    </span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    :return: A opção escolhida pelo utilizador.</span>
+<span class="sd">      &gt;&gt;&gt; opcao = exibir_menu_personalizado(&quot;PAINEL DE ADMINISTRADOR&quot;, {&quot;1&quot;: func1, &quot;2&quot;: func2})</span>
+<span class="sd">        &gt;&gt;&gt; print(opcao)    &quot;1&quot;  # Se o utilizador escolher a opção 1   &quot;&quot;&quot;</span>
+    <span class="n">limpar_ecra</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">MAGENTA</span><span class="si">}{</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="si">}{</span><span class="s1">&#39;=&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">45</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="si">}{</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="si">}</span><span class="s2">    </span><span class="si">{</span><span class="n">titulo</span><span class="si">}</span><span class="s2"> - AIR LESTI&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">MAGENTA</span><span class="si">}{</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="si">}{</span><span class="s1">&#39;=&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">45</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Este loop percorre o dicionário que o main enviou e cria as linhas do menu</span>
+    <span class="k">for</span> <span class="n">tecla</span><span class="p">,</span> <span class="n">funcao</span> <span class="ow">in</span> <span class="n">mapa_opcoes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># Pega no nome da função e torna-o bonito (ex: adicionar_voo -&gt; Adicionar Voo)</span>
+        <span class="n">nome_label</span> <span class="o">=</span> <span class="n">funcao</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}{</span><span class="n">tecla</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">nome_label</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">0.</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="si">}</span><span class="s2"> Voltar ao Menu de Perfis&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="si">}</span><span class="s2">Escolha uma opção: &quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="exibir_menu_principal">
+<a class="viewcode-back" href="../../src.consola.html#src.consola.exibir_menu_principal">[documentos]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">exibir_menu_principal</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Exibe o menu estilizado e retorna a opção.</span>
+<span class="sd">    </span>
+<span class="sd">    :return: str - A opção escolhida pelo utilizador.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &gt;&gt;&gt; opcao = exibir_menu_principal()</span>
+<span class="sd">    &gt;&gt;&gt; print(opcao)    &quot;1&quot;  # Se o utilizador escolher a opção 1   &quot;&quot;&quot;</span>
+    
+    <span class="n">limpar_ecra</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">MAGENTA</span><span class="si">}{</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="si">}{</span><span class="s1">&#39;=&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">45</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="si">}{</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="si">}</span><span class="s2">        SISTEMA DE BILHETES - AIR LESTI&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">MAGENTA</span><span class="si">}{</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="si">}{</span><span class="s1">&#39;=&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">45</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">1.</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2"> Adicionar Novo Voo&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">2.</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2"> Registar Passageiro&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">3.</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2"> Comprar Bilhete&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">4.</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2"> Cancelar Bilhete&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">5.</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2"> Listar Voos e Ocupação&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">6.</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2"> Histórico de Transações&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">0.</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="si">}</span><span class="s2"> Sair&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="si">}</span><span class="s2">Escolha uma opção: &quot;</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># --- FUNÇÕES DE AÇÃO (Chamadas pelo mapa_opcoes no main.py) ---</span>
+
+
+<div class="viewcode-block" id="adicionar_voo">
+<a class="viewcode-back" href="../../src.consola.html#src.consola.adicionar_voo">[documentos]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">adicionar_voo</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Interface para abrir voos usando a tabela global.</span>
+<span class="sd">    </span>
+<span class="sd">    :param sistema: Sistema - A instância do sistema onde os voos serão adicionados.</span>
+<span class="sd">    :type sistema: Sistema</span>
+<span class="sd">    </span>
+<span class="sd">    :raises ValueError: Se a escolha for inválida ou se o voo já existir.</span>
+<span class="sd">    </span>
+<span class="sd">    :return: None</span>
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">limpar_ecra</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">MAGENTA</span><span class="si">}{</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="si">}</span><span class="s2">--- PAINEL DE OPERAÇÕES: AEROPORTO DE FARO ---&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="si">}{</span><span class="s1">&#39;ID&#39;</span><span class="si">:</span><span class="s2">&lt;4</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="s1">&#39;VOO&#39;</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="s1">&#39;DESTINO&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="s1">&#39;HORA&#39;</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="s1">&#39;TIPO&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}{</span><span class="s1">&#39;-&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">55</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">TABELA_HORARIOS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">tipo_txt</span> <span class="o">=</span> <span class="s2">&quot;Nacional&quot;</span> <span class="k">if</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;tipo&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;N&quot;</span> <span class="k">else</span> <span class="s2">&quot;Intl&quot;</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}{</span><span class="n">idx</span><span class="si">:</span><span class="s2">&lt;4</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2">| </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;voo&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;destino&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;hora&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">tipo_txt</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">99   </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2">| Inserção Manual&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">escolha</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="si">}</span><span class="s2">Selecione o ID da rota: &quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">escolha</span> <span class="o">==</span> <span class="s2">&quot;99&quot;</span><span class="p">:</span>
+            <span class="n">num</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">Número do Voo: </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+            <span class="n">destino</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">Destino: </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">cap</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">Capacidade: </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+            <span class="n">tipo</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">Tipo (N/I): </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">tipo</span> <span class="o">==</span> <span class="s2">&quot;I&quot;</span><span class="p">:</span>
+                <span class="n">taxa</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">Taxa (€): </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+                <span class="n">sistema</span><span class="o">.</span><span class="n">voos</span><span class="p">[</span><span class="n">num</span><span class="p">]</span> <span class="o">=</span> <span class="n">VooInternacional</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="s2">&quot;Faro&quot;</span><span class="p">,</span> <span class="n">destino</span><span class="p">,</span> <span class="n">cap</span><span class="p">,</span> <span class="n">taxa</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sistema</span><span class="o">.</span><span class="n">voos</span><span class="p">[</span><span class="n">num</span><span class="p">]</span> <span class="o">=</span> <span class="n">VooNacional</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="s2">&quot;Faro&quot;</span><span class="p">,</span> <span class="n">destino</span><span class="p">,</span> <span class="n">cap</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">escolha</span> <span class="ow">in</span> <span class="n">TABELA_HORARIOS</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">TABELA_HORARIOS</span><span class="p">[</span><span class="n">escolha</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;voo&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">sistema</span><span class="o">.</span><span class="n">voos</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="si">}</span><span class="s2">⚠️ O voo </span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;voo&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> já está ativo!&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;tipo&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;I&quot;</span><span class="p">:</span>
+                    <span class="n">sistema</span><span class="o">.</span><span class="n">voos</span><span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;voo&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">VooInternacional</span><span class="p">(</span>
+                        <span class="n">d</span><span class="p">[</span><span class="s2">&quot;voo&quot;</span><span class="p">],</span> <span class="s2">&quot;Faro&quot;</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;destino&quot;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;cap&quot;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;taxa&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">sistema</span><span class="o">.</span><span class="n">voos</span><span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;voo&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">VooNacional</span><span class="p">(</span>
+                        <span class="n">d</span><span class="p">[</span><span class="s2">&quot;voo&quot;</span><span class="p">],</span> <span class="s2">&quot;Faro&quot;</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;destino&quot;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;cap&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span><span class="si">}</span><span class="s2">✅ Voo </span><span class="si">{</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;voo&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> ativado!&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="si">}</span><span class="s2">❌ Erro: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">aguardar_enter</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="registar_passageiro">
+<a class="viewcode-back" href="../../src.consola.html#src.consola.registar_passageiro">[documentos]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">registar_passageiro</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Interface para criar um novo passageiro.</span>
+<span class="sd">    </span>
+<span class="sd">    :param sistema: Sistema - A instância do sistema onde os passageiros são registados.</span>
+<span class="sd">    :type sistema: Sistema</span>
+<span class="sd">    </span>
+<span class="sd">    :raises ValueError: Se o passageiro já existir ou se os dados forem inválidos.</span>
+<span class="sd">    </span>
+<span class="sd">    :return: None</span>
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2">--- Registar Passageiro ---&quot;</span><span class="p">)</span>
+    <span class="n">nome</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">Nome Completo: </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">passaporte</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">Nº Passaporte: </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sistema</span><span class="o">.</span><span class="n">criar_passageiro</span><span class="p">(</span><span class="n">nome</span><span class="p">,</span> <span class="n">passaporte</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span><span class="si">}</span><span class="s2">✅ Passageiro </span><span class="si">{</span><span class="n">nome</span><span class="si">}</span><span class="s2"> guardado.&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="si">}</span><span class="s2">❌ Erro: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">aguardar_enter</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="vender_bilhete">
+<a class="viewcode-back" href="../../src.consola.html#src.consola.vender_bilhete">[documentos]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">vender_bilhete</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Lógica: Escolhe voo primeiro, depois insere dados do passageiro.</span>
+<span class="sd">    </span>
+<span class="sd">    :param sistema: Sistema - A instância do sistema onde os voos e passageiros estão registados.</span>
+<span class="sd">    :type sistema: Sistema</span>
+<span class="sd">    </span>
+<span class="sd">    :raises ValueError: Se o voo não existir, se o passageiro não existir ou se a compra falhar.</span>
+<span class="sd">    </span>
+<span class="sd">    :return: None</span>
+<span class="sd">    :rtype: None&quot;&quot;&quot;</span>
+    <span class="n">limpar_ecra</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">MAGENTA</span><span class="si">}</span><span class="s2">--- VENDA DE BILHETE ---&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 1. Mostra voos ativos no sistema para o cliente escolher</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sistema</span><span class="o">.</span><span class="n">voos</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="si">}</span><span class="s2">Nenhum voo disponível no momento.&quot;</span><span class="p">)</span>
+        <span class="n">aguardar_enter</span><span class="p">()</span>
+        <span class="k">return</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="si">}</span><span class="s2">Voos Disponíveis:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sistema</span><span class="o">.</span><span class="n">voos</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;- </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">numero_voo</span><span class="si">}</span><span class="s2"> para </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">destino</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">lugares_ocupados</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">capacidade</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">num_voo</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">Digite o Número do Voo: </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">num_voo</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sistema</span><span class="o">.</span><span class="n">voos</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="si">}</span><span class="s2">❌ Voo não encontrado!&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">nome</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">Nome do Passageiro: </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">passaporte</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">Nº Passaporte: </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">preco</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">Preço Base (€): </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sistema</span><span class="o">.</span><span class="n">criar_passageiro</span><span class="p">(</span><span class="n">nome</span><span class="p">,</span> <span class="n">passaporte</span><span class="p">)</span>
+            <span class="n">bilhete</span> <span class="o">=</span> <span class="n">sistema</span><span class="o">.</span><span class="n">vender_bilhete</span><span class="p">(</span><span class="n">passaporte</span><span class="p">,</span> <span class="n">num_voo</span><span class="p">,</span> <span class="n">preco</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span><span class="si">}</span><span class="s2">✨ SUCESSO! </span><span class="si">{</span><span class="n">bilhete</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="si">}</span><span class="s2">❌ Falha: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">aguardar_enter</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="cancelar_bilhete">
+<a class="viewcode-back" href="../../src.consola.html#src.consola.cancelar_bilhete">[documentos]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">cancelar_bilhete</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Procura bilhetes por passaporte, lista as opções e pede confirmação.</span>
+<span class="sd">    </span>
+<span class="sd">    :param sistema: Sistema - A instância do sistema onde os bilhetes estão registados.</span>
+<span class="sd">    :type sistema: Sistema</span>
+<span class="sd">    </span>
+<span class="sd">    :raises ValueError: Se não existirem bilhetes ativos ou se a escolha for inválida.</span>
+<span class="sd">    </span>
+<span class="sd">    :return: None</span>
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">limpar_ecra</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">MAGENTA</span><span class="si">}{</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="si">}</span><span class="s2">--- GESTÃO DE CANCELAMENTOS ---&quot;</span><span class="p">)</span>
+    <span class="c1"># 1. Filtrar apenas os bilhetes que estão &quot;Ativo&quot;</span>
+    <span class="n">bilhetes_ativos</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">sistema</span><span class="o">.</span><span class="n">bilhetes</span> <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">estado</span> <span class="o">==</span> <span class="s2">&quot;Ativo&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">bilhetes_ativos</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">ℹ️ Não existem bilhetes ativos no sistema para cancelar.&quot;</span><span class="p">)</span>
+        <span class="n">aguardar_enter</span><span class="p">()</span>
+        <span class="k">return</span>
+
+    <span class="c1"># 2. Listar com Enumerate</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="si">}{</span><span class="s1">&#39;#&#39;</span><span class="si">:</span><span class="s2">&lt;4</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="s1">&#39;ID&#39;</span><span class="si">:</span><span class="s2">&lt;4</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="s1">&#39;PASSAGEIRO&#39;</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="s1">&#39;VOO&#39;</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="s1">&#39;DESTINO&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}{</span><span class="s1">&#39;-&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">65</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># O enumerate(..., 1) começa a contagem no 1 para ser mais natural para o utilizador</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">bilhetes_ativos</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">nome_curto</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">passageiro</span><span class="o">.</span><span class="n">nome</span><span class="p">[:</span><span class="mi">19</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}{</span><span class="n">i</span><span class="si">:</span><span class="s2">&lt;4</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2">| </span><span class="si">{</span><span class="n">b</span><span class="o">.</span><span class="n">id_bilhete</span><span class="si">:</span><span class="s2">&lt;4</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">nome_curto</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">b</span><span class="o">.</span><span class="n">voo</span><span class="o">.</span><span class="n">numero_voo</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">b</span><span class="o">.</span><span class="n">voo</span><span class="o">.</span><span class="n">destino</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}{</span><span class="s1">&#39;-&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">65</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 3. Escolha por índice</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">escolha_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+            <span class="nb">input</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="si">}</span><span class="s2">Escolha o número (#) do bilhete (ou 0 para sair): </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">escolha_idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Validar se o número escolhido está dentro do intervalo da lista</span>
+        <span class="k">if</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">escolha_idx</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bilhetes_ativos</span><span class="p">):</span>
+            <span class="c1"># Recuperamos o bilhete exato da nossa lista filtrada</span>
+            <span class="n">bilhete_selecionado</span> <span class="o">=</span> <span class="n">bilhetes_ativos</span><span class="p">[</span><span class="n">escolha_idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+            <span class="c1"># Confirmação</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="si">}</span><span class="s2">CONFIRMAR CANCELAMENTO?&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2">Passageiro: </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}{</span><span class="n">bilhete_selecionado</span><span class="o">.</span><span class="n">passageiro</span><span class="o">.</span><span class="n">nome</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2">Voo: </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}{</span><span class="n">bilhete_selecionado</span><span class="o">.</span><span class="n">voo</span><span class="o">.</span><span class="n">numero_voo</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">confirmar</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="nb">input</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2">Digite </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span><span class="si">}</span><span class="s2">&#39;S&#39;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2"> para confirmar: &quot;</span>
+                <span class="p">)</span>
+                <span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                <span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">confirmar</span> <span class="o">==</span> <span class="s2">&quot;S&quot;</span><span class="p">:</span>
+                <span class="c1"># Usamos o ID real do bilhete para chamar a função do sistema</span>
+                <span class="n">sistema</span><span class="o">.</span><span class="n">cancelar_bilhete</span><span class="p">(</span><span class="n">bilhete_selecionado</span><span class="o">.</span><span class="n">id_bilhete</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span><span class="si">}</span><span class="s2">✅ SUCESSO! O bilhete #</span><span class="si">{</span><span class="n">bilhete_selecionado</span><span class="o">.</span><span class="n">id_bilhete</span><span class="si">}</span><span class="s2"> foi anulado.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">Operação cancelada.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="si">}</span><span class="s2">❌ Opção inválida! Escolha um número entre 1 e </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">bilhetes_ativos</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="si">}</span><span class="s2">❌ Erro: Insira apenas números.&quot;</span><span class="p">)</span>
+
+    <span class="n">aguardar_enter</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="listar_voos">
+<a class="viewcode-back" href="../../src.consola.html#src.consola.listar_voos">[documentos]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">listar_voos</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mostra o estado atual de todos os voos.</span>
+<span class="sd">    </span>
+<span class="sd">    :param sistema: Sistema - A instância do sistema onde os voos estão registados.</span>
+<span class="sd">    :type sistema: Sistema</span>
+<span class="sd">    </span>
+<span class="sd">    :raises ValueError: Se não existirem voos registados.</span>
+<span class="sd">    </span>
+<span class="sd">    :return: None</span>
+<span class="sd">    :rtype: None&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}{</span><span class="s1">&#39;=&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">50</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="si">}{</span><span class="s1">&#39;VOO&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="s1">&#39;ROTA&#39;</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="s1">&#39;VAGAS&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}{</span><span class="s1">&#39;-&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">50</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sistema</span><span class="o">.</span><span class="n">voos</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">Nenhum voo registado.&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sistema</span><span class="o">.</span><span class="n">voos</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">cor_vaga</span> <span class="o">=</span> <span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">tem_vaga</span><span class="p">()</span> <span class="k">else</span> <span class="n">Fore</span><span class="o">.</span><span class="n">RED</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">lugares_ocupados</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">capacidade</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">numero_voo</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">origem</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;-&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">v</span><span class="o">.</span><span class="n">destino</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">cor_vaga</span><span class="si">}{</span><span class="n">status</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}{</span><span class="s1">&#39;=&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">50</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">aguardar_enter</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="mostrar_historico">
+<a class="viewcode-back" href="../../src.consola.html#src.consola.mostrar_historico">[documentos]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">mostrar_historico</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Exibe os logs de todas as transações.</span>
+<span class="sd">    </span>
+<span class="sd">    :param sistema: Sistema - A instância do sistema onde os logs estão registados.</span>
+<span class="sd">    :type sistema: Sistema</span>
+<span class="sd">    </span>
+<span class="sd">    :return: None</span>
+<span class="sd">    :rtype: None&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">MAGENTA</span><span class="si">}</span><span class="s2">--- Histórico de Transações ---&quot;</span><span class="p">)</span>
+    <span class="n">logs</span> <span class="o">=</span> <span class="n">sistema</span><span class="o">.</span><span class="n">obter_historico_geral</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">logs</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">Sem movimentos registados.&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">log</span> <span class="ow">in</span> <span class="n">logs</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2">[</span><span class="si">{</span><span class="n">log</span><span class="p">[</span><span class="s1">&#39;data_hora&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span><span class="si">}{</span><span class="n">log</span><span class="p">[</span><span class="s1">&#39;tipo&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}{</span><span class="n">log</span><span class="p">[</span><span class="s1">&#39;detalhes&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+    <span class="n">aguardar_enter</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="ver_passageiros_por_voo">
+<a class="viewcode-back" href="../../src.consola.html#src.consola.ver_passageiros_por_voo">[documentos]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">ver_passageiros_por_voo</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Exibe quem está dentro de um voo específico (Admin/Balconista).</span>
+<span class="sd">    </span>
+<span class="sd">    :param sistema: Sistema - A instância do sistema onde os voos estão registados.</span>
+<span class="sd">    :type sistema: Sistema</span>
+<span class="sd">    </span>
+<span class="sd">    :return: None</span>
+<span class="sd">    :rtype: None&quot;&quot;&quot;</span>
+    <span class="n">limpar_ecra</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">MAGENTA</span><span class="si">}{</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span><span class="si">}</span><span class="s2">--- MANIFESTO DE PASSAGEIROS ---&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 1. Verificar se há voos</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sistema</span><span class="o">.</span><span class="n">voos</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="si">}</span><span class="s2">Nenhum voo disponível no momento.&quot;</span><span class="p">)</span>
+        <span class="n">aguardar_enter</span><span class="p">()</span>
+        <span class="k">return</span>
+
+    <span class="c1"># 2. Listar voos para ajudar a escolha</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="si">}</span><span class="s2">Voos Ativos:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sistema</span><span class="o">.</span><span class="n">voos</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">numero_voo</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">origem</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">destino</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+    <span class="n">num_voo</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">Digite o Número do Voo: </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="c1"># 3. Validar e mostrar passageiros</span>
+    <span class="k">if</span> <span class="n">num_voo</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sistema</span><span class="o">.</span><span class="n">voos</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="si">}</span><span class="s2">❌ Voo </span><span class="si">{</span><span class="n">num_voo</span><span class="si">}</span><span class="s2"> não encontrado!&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">sistema</span><span class="o">.</span><span class="n">voos</span><span class="p">[</span><span class="n">num_voo</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">CYAN</span><span class="si">}</span><span class="s2">Passageiros Confirmados no Voo </span><span class="si">{</span><span class="n">num_voo</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}{</span><span class="s1">&#39;-&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">45</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># O NOME CORRETO É: v.passageiros_no_voo</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">passageiros_no_voo</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}</span><span class="s2">Este voo ainda não tem passageiros.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">p_id</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">passageiros_no_voo</span><span class="p">:</span>
+                <span class="c1"># O SISTEMA guarda o dicionário de passageiros</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">sistema</span><span class="o">.</span><span class="n">passageiros</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">p_id</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">p</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">GREEN</span><span class="si">}</span><span class="s2">✔ </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}{</span><span class="n">p</span><span class="o">.</span><span class="n">nome</span><span class="si">:</span><span class="s2">&lt;25</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span><span class="si">}{</span><span class="n">p_id</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">RED</span><span class="si">}</span><span class="s2">⚠ ID </span><span class="si">{</span><span class="n">p_id</span><span class="si">}</span><span class="s2"> não encontrado no registo central.&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fore</span><span class="o">.</span><span class="n">WHITE</span><span class="si">}{</span><span class="s1">&#39;-&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">45</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">aguardar_enter</span><span class="p">()</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">TP2 Aeroporto - Documentação</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Ir" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navegação</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../src.html">src package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Código do módulo</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Author.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
