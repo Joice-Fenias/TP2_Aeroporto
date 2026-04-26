@@ -7,16 +7,16 @@
 #
 """Main do programa. Gerencia o loop principal e a navegação entre perfis.
 
-..note:
-- Carrega os dados da base de dados no início.
-- Apresenta um menu para escolher o perfil (Admin, Balconista, Cliente).
-- Cada perfil tem um submenu com opções específicas.
-- Após cada ação, os dados são guardados automaticamente.
-- Permite encerrar o sistema e salvar os dados antes de sair.
+.. note::
+    Carrega os dados da base de dados no início.
+    Apresenta um menu para escolher o perfil (Admin, Balconista, Cliente).
+    Cada perfil tem um submenu com opções específicas.
+    Após cada ação, os dados são guardados automaticamente.
+    Permite encerrar o sistema e salvar os dados antes de sair.
 
-..warning::
-Este arquivo é o ponto de entrada do programa. Evite colocar lógica complexa aqui.
-Use as funções definidas em consola.py para manter a organização."""
+.. warning::
+    Este arquivo é o ponto de entrada do programa. Evite colocar lógica complexa aqui.
+    Use as funções definidas em consola.py para manter a organização."""
 
 import time
 from src import consola as ui
@@ -26,10 +26,10 @@ from src.base_dados import carregar_dados, guardar_dados
 def main():
     """Ponto de entrada do programa. Gerencia o loop principal e a navegação entre perfis.
     
-    ..note:
-    - Carrega os dados da base de dados no início.
-    - Apresenta um menu para escolher o perfil (Admin, Balconista, Cliente).
-    - Cada perfil tem um submenu com opções específicas."""
+    .. note::
+        Carrega os dados da base de dados no início.
+        Apresenta um menu para escolher o perfil (Admin, Balconista, Cliente).
+        Cada perfil tem um submenu com opções específicas."""
     # 1. CARREGAMENTO INICIAL
     try:
         dados_base = carregar_dados()

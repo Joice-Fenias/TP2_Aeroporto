@@ -33,8 +33,24 @@
             
   <h1>Código fonte de src.modelos</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Módulo de Modelos - Sistema de Venda de Bilhetes de Avião</span>
-<span class="sd">Contém a lógica de negócio, validações de integridade e histórico de transações.</span>
+<span class="sd">Módulo de Definição de Modelos de Dados</span>
+<span class="sd">--------------------------------------</span>
+
+<span class="sd">Este módulo contém as classes fundamentais que representam as entidades </span>
+<span class="sd">do sistema aeroportuário. Implementa a lógica de negócio e validações </span>
+<span class="sd">essenciais para a integridade dos dados.</span>
+
+<span class="sd">.. note::</span>
+<span class="sd">    As classes aqui definidas são usadas em todo o sistema para garantir</span>
+<span class="sd">    consistência e facilitar a manutenção. Evite colocar lógica de interface</span>
+<span class="sd">    ou manipulação de dados diretamente aqui. Use as funções em consola.py</span>
+<span class="sd">    para interagir com os objetos definidos neste módulo.</span>
+<span class="sd">    </span>
+<span class="sd">.. warning::</span>
+<span class="sd">    Este módulo é o coração do sistema. Qualquer alteração aqui pode afetar</span>
+<span class="sd">    várias partes do programa. Teste cuidadosamente as mudanças e mantenha</span>
+<span class="sd">    a documentação atualizada para refletir as funcionalidades de cada classe.</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
@@ -294,7 +310,7 @@
 <span class="sd">        </span>
 <span class="sd">        :param nome: str - Nome completo do passageiro</span>
 <span class="sd">        :param passaporte: str - Número do passaporte (deve ser único)</span>
-<span class="sd">        </span>
+<span class="sd">    </span>
 <span class="sd">        :raises ValueError: Se os dados forem inválidos.</span>
 <span class="sd">        </span>
 <span class="sd">        :return: Passageiro - O objeto Passageiro criado ou existente.&quot;&quot;&quot;</span>
@@ -334,6 +350,7 @@
 <a class="viewcode-back" href="../../src.modelos.html#src.modelos.Sistema.cancelar_bilhete">[documentos]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">cancelar_bilhete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_bilhete</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Cancela um bilhete específico.</span>
+<span class="sd">        </span>
 <span class="sd">        :param id_bilhete: int - O identificador do bilhete a cancelar</span>
 <span class="sd">        </span>
 <span class="sd">        :raises ValueError: Se o bilhete não for encontrado ou já estiver cancelado.</span>
@@ -373,6 +390,8 @@
 <span class="sd">        :param dados_brutos: dict - O dicionário carregado do ficheiro JSON.</span>
 <span class="sd">        </span>
 <span class="sd">        :return: None</span>
+<span class="sd">        :retype: None</span>
+<span class="sd">        :raises ValueError: Se os dados forem inválidos ou inconsistentes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># 1. Recriar Passageiros</span>
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">dados_brutos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;passageiros&quot;</span><span class="p">,</span> <span class="p">[]):</span>
