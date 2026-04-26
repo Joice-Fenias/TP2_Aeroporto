@@ -35,9 +35,9 @@ Os dados são persistidos em ficheiro JSON, garantindo continuidade entre execu�
 | *Cliente*    | Consultar voos, comprar e cancelar bilhetes |
 
 ---
-
 ## Estrutura do Projeto
 
+```
 TP2_AEROPORTO/
 │
 ├── docs/
@@ -64,6 +64,7 @@ TP2_AEROPORTO/
 ├── database.json
 ├── README.md
 └── .gitignore
+```
 
 ---
 
